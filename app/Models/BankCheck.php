@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class BankCheck extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'payroll_id',
+        'date',
+        'pay_to',
+        'amount',
+        'amount_in_words',
+        'for',
+        'routing_number',
+        'account_number',
+    ];
+
+    public function payroll()
+    {
+        return $this->belongsTo(Payroll::class);
+    }
+}
