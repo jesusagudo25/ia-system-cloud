@@ -33,7 +33,7 @@ class PayrollController extends Controller
 
         $payroll = Payroll::create([
             'user_id' => $request->user_id,
-            'month' => Carbon::parse($request->start_date)->format('m'),
+            'month' => Carbon::parse($request->start_date)->format('F'),
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
             'total_amount' => $total[0]['total_amount']

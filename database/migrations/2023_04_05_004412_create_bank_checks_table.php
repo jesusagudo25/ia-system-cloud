@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('bank_checks', function (Blueprint $table) {
-            $table->id();
+            $table->id()->startingValue(1700);
             $table->foreignId('payroll_id')
                 ->constrained()
                 ->onDelete('cascade')

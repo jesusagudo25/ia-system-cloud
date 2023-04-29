@@ -5,7 +5,6 @@
     <title>Invoice #{{ $invoice->id }}</title>
 </head>
 <style type="text/css">
-    <!--
     /* Font Definitions */
     @font-face {
         font-family: "Cambria Math";
@@ -546,7 +545,6 @@
     ul {
         margin-bottom: 0cm;
     }
-    -->
 </style>
 
 <body>
@@ -582,7 +580,7 @@
                 <td width=312 valign=top style='width:233.95pt;padding:0cm 0cm 0cm 0cm;
           height:67.45pt'>
                     <p class=Alinearaladerecha><strong><span lang=EN>INVOICE</span></strong><span
-                            class=Heading3Char><span lang=EN> N.º </span></span><span lang=EN>{{$invoice->id}}</span></p>
+                            class=Heading3Char><span lang=EN> N.º </span></span><span lang=EN>{{$details->invoice_number}}</span></p>
                     <p class=Alinearaladerecha><span class=Heading3Char><span lang=EN> </span></span><strong><span
                                 lang=EN>DATE</span></strong><span class=Heading3Char><span lang=EN> </span></span><span
                             lang=EN>{{\Carbon\Carbon::parse($details->date_of_service_provided)->format(' M d, Y')}}</span></p>
@@ -627,6 +625,19 @@
                     </td>
                 </tr>
             </thead>
+            <tr>
+                <td width=520 valign=top
+                    style='width:389.9pt;border:none;border-bottom:solid #BDD6EE 1.0pt;
+          padding:0cm 0cm 0cm 0cm'>
+                    <h5 style='margin-bottom:0cm;line-height:normal'><em><span lang=EN>Assignment:
+                            </span></em><span>{{ $details->assignment_number,  }}</span></h5>
+                </td>
+                <td width=179 valign=top
+                    style='width:134.6pt;border:none;border-bottom:solid #BDD6EE 1.0pt;
+          padding:0cm 0cm 0cm 0cm'>
+                    <p class=Cantidad style='margin-bottom:0cm'><span lang=EN> </span></p>
+                </td>
+            </tr>
             <tr>
                 <td width=520 valign=top
                     style='width:389.9pt;border:none;border-bottom:solid #BDD6EE 1.0pt;
@@ -740,6 +751,32 @@
                         <em><span lang=EN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             </span></em><span>{{ $details->city }}, {{ $details->state }} {{ $details->zip_code }}</span>
                         </h5>
+                </td>
+                <td width=179 valign=top
+                    style='width:134.6pt;border:none;border-bottom:solid #BDD6EE 1.0pt;
+          padding:0cm 0cm 0cm 0cm'>
+                    <p class=Cantidad style='margin-bottom:0cm'><span lang=EN> </span></p>
+                </td>
+            </tr>
+            <tr>
+                <td width=520 valign=top
+                    style='width:389.9pt;border:none;border-bottom:solid #BDD6EE 1.0pt;
+          padding:0cm 0cm 0cm 0cm'>
+                    <h5 style='margin-bottom:0cm;line-height:normal'>&nbsp;</h5>
+                </td>
+                <td width=179 valign=top
+                    style='width:134.6pt;border:none;border-bottom:solid #BDD6EE 1.0pt;
+          padding:0cm 0cm 0cm 0cm'>
+                    <p class=Cantidad style='margin-bottom:0cm'><span lang=EN> </span></p>
+                </td>
+            </tr>
+            
+            <tr>
+                <td width=520 valign=top
+                    style='width:389.9pt;border:none;border-bottom:solid #BDD6EE 1.0pt;
+          padding:0cm 0cm 0cm 0cm'>
+                    <h5 style='margin-bottom:0cm;line-height:normal'><em><span lang=EN>Comments:
+                            </span></em><span>{{ $details->comments }}</span></h5>
                 </td>
                 <td width=179 valign=top
                     style='width:134.6pt;border:none;border-bottom:solid #BDD6EE 1.0pt;

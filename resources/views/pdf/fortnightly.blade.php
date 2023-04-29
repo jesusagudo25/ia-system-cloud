@@ -7,7 +7,6 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Fortnightly Payroll: {{ $payroll->start_date }} to {{ $payroll->end_date }}</title>
     <style>
-        <!--
         /* Font Definitions */
         @font-face {
             font-family: "Cambria Math";
@@ -49,31 +48,36 @@
         div.WordSection1 {
             page: WordSection1;
         }
-        -->
+
+        .page-break {
+            page-break-after: always;
+        }
     </style>
 </head>
 
 <body lang=ES-PA style='word-wrap:break-word'>
 
     <div class=WordSection1>
-        <p class=MsoNormal align=center style='text-align:center'><b>
-            <span style='font-size:12.0pt;line-height:107%;font-family:"Arial",sans-serif'>
-                Fortnightly Payroll: {{ $payroll->start_date }} to {{ $payroll->end_date }}
-            </span></b>
-        </p>
-        <hr>
-        <p class=MsoNormal align=center style='text-align:center'><b>
-            <span style='font-size:12.0pt;line-height:107%;font-family:"Arial",sans-serif'>
-                &nbsp;
-            </span></b>
-
-    </div>
-
-    <div class=WordSection1>
+        
+        @foreach ($interpreters as $interpreter)
+        <div class=WordSection1>
+            <p class=MsoNormal align=center style='text-align:center'><b>
+                <span style='font-size:12.0pt;line-height:107%;font-family:"Arial",sans-serif'>
+                    Fortnightly Payroll: {{ $payroll->start_date }} to {{ $payroll->end_date }}
+                </span></b>
+            </p>
+            <hr>
+            <p class=MsoNormal align=center style='text-align:center'><b>
+                <span style='font-size:12.0pt;line-height:107%;font-family:"Arial",sans-serif'>
+                    &nbsp;
+                </span>
+            </b>
+            </p>
+    
+        </div>
 
         <p class=MsoNormal align=center style='text-align:center'><b><span style='font-size:12.0pt;line-height:107%;font-family:"Arial",sans-serif'>Interpreters</span></b></p>
 
-        @foreach ($interpreters as $interpreter)
         <div align=center>
 
             <table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0 width="100%" style='width:100.0%;border-collapse:collapse;border:none'>
@@ -201,9 +205,25 @@
 
         </div>
         <p class=MsoNormal>&nbsp;</p>
+
+        <div class="page-break"></div>
         @endforeach
 
-        <p class=MsoNormal>&nbsp;</p>
+        <div class=WordSection1>
+            <p class=MsoNormal align=center style='text-align:center'><b>
+                <span style='font-size:12.0pt;line-height:107%;font-family:"Arial",sans-serif'>
+                    Fortnightly Payroll: {{ $payroll->start_date }} to {{ $payroll->end_date }}
+                </span></b>
+            </p>
+            <hr>
+            <p class=MsoNormal align=center style='text-align:center'><b>
+                <span style='font-size:12.0pt;line-height:107%;font-family:"Arial",sans-serif'>
+                    &nbsp;
+                </span>
+            </b>
+            </p>
+    
+        </div>
 
         <p class=MsoNormal align=center style='text-align:center'><b><span style='font-size:12.0pt;line-height:107%;font-family:"Arial",sans-serif'>Coordinator</span></b></p>
 

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('lenguages', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('price_per_hour');
+            $table->decimal('price_per_hour', 8, 2);
             $table->timestamps();
         });
     }

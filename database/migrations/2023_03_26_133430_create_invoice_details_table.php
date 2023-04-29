@@ -21,6 +21,10 @@ return new class extends Migration
                 ->constrained()
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
+            
+            $table->string('invoice_number');
+            $table->string('assignment_number');
+
             $table->date('date_of_service_provided');
             $table->time('arrival_time');
             $table->time('start_time');

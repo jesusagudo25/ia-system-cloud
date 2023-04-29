@@ -7,7 +7,6 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Monthly Payroll: {{ $payroll->start_date }} to {{ $payroll->end_date }}</title>
     <style>
-        <!--
         /* Font Definitions */
         @font-face {
             font-family: "Cambria Math";
@@ -54,7 +53,6 @@
         .page-break {
             page-break-after: always;
         }
-        -->
     </style>
 </head>
 

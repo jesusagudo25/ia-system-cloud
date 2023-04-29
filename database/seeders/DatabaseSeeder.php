@@ -58,23 +58,23 @@ class DatabaseSeeder extends Seeder
 
         DB::table('interpreters')->insert([
             'lenguage_id' => 1,
-            'full_name' => 'Orlando perez',
+            'full_name' => 'Orlando Perez',
             'ssn' => '33333222',
-            'email' => 'test1@test.com',
+            'email' => 'orlando@interprete.com',
             'phone_number' => '32232323',
-            'address' => '123 Test St',
+            'address' => '2600 NW 5TH AVE',
             'city' => 'Miami',
             'state' => 'Florida',
-            'zip_code' => '12345',
+            'zip_code' => '33182',
         ]);
 
         DB::table('interpreters')->insert([
             'lenguage_id' => 2,
-            'full_name' => 'Test Interpreter',
+            'full_name' => 'Jessica Agudo',
             'ssn' => '3534523',
-            'email' => 'test2@test.com',
+            'email' => 'jessica@interprete.com',
             'phone_number' => '4434232',
-            'address' => '4332 Test St',
+            'address' => '8005 NW 8TH ST APT 401',
             'city' => 'Miami',
             'state' => 'Florida',
             'zip_code' => '12345',
@@ -82,35 +82,35 @@ class DatabaseSeeder extends Seeder
 
         DB::table('interpreters')->insert([
             'lenguage_id' =>3,
-            'full_name' => 'Test Interpreter',
+            'full_name' => 'Carmen Ortega',
             'ssn' => '123456789',
-            'email' => 'test3@test.com',
+            'email' => 'carmen@interprete.com',
             'phone_number' => '123456720',
-            'address' => '34434 Test St',
+            'address' => '1700 NE 198TH TER',
             'city' => 'Miami',
             'state' => 'Florida',
             'zip_code' => '12345',
         ]);
 
         DB::table('coordinators')->insert([
-            'full_name' => 'Test Coordinator',
+            'full_name' => 'Mikey Williams',
             'ssn' => '123456789',
-            'email' => 'coord@email.com',
+            'email' => 'mikey@williams.com',
             'phone_number' => '1233230',
-            'address' => '123 Test St',
-            'city' => 'Miami',
+            'address' => '1970 NW 82ND AVE',
+            'city' => 'DORAL',
             'state' => 'Florida',
-            'zip_code' => '12345',
+            'zip_code' => '33126-1049',
         ]);
 
         DB::table('agencies')->insert([
-            'name' => 'Test Agency',
-            'email' => 'test@agency.com',
+            'name' => 'Lenguage Association',
+            'email' => 'lenguage@agency.com',
             'phone_number' => '1234567890',
-            'address' => '123 Test St',
-            'city' => 'Miami',
+            'address' => '1970 NW 82ND AVE',
+            'city' => 'DORAL',
             'state' => 'Florida',
-            'zip_code' => '12345',
+            'zip_code' => '33126-1049',
         ]);
     }
 }

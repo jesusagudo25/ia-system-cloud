@@ -30,7 +30,14 @@ return new class extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
             $table->decimal('total_amount', 8, 2)->default(0);
-            $table->string('status')->default('open');
+            $table->string('status')->default('pending');
+            /*
+                Status:
+                    - open -> invoice is created but not closed -> access to process
+                    - paid -> invoice is paid -> access to invoice download, and cancelled
+                    - cancelled -> invoice is cancelled -> void
+                    - pending -> invoice is created but not paid -> paid
+            */
             $table->timestamps();
         });
     }

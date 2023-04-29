@@ -42,11 +42,12 @@ class InvoiceController extends Controller
             'interpreter_id' => $interpreter_id,
             'coordinator_id' => $request->coordinator_id,
             'total_amount' => $request->total_amount,
-            'status' => 'closed'
         ]);
 
         InvoiceDetail::create([
             'invoice_id' => $invoice->id,
+            'invoice_number' => sprintf('%06d', $invoice->id).'-JA',
+            'assignment_number' => sprintf('%06d', $invoice->id),
             'description_id' => $request->description_id,
             'date_of_service_provided' => $request->date_of_service_provided,
             'arrival_time' => $request->arrival_time,
