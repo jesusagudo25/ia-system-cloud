@@ -24,10 +24,7 @@ class TempoInvoiceDetail extends Model
         'total_amount_hours',
         'total_interpreter',
         'total_coordinator',
-        'address',
-        'city',
-        'state',
-        'zip_code',
+        'address_id',
         'comments',
     ];
 
@@ -39,5 +36,10 @@ class TempoInvoiceDetail extends Model
     public function description()
     {
         return $this->belongsTo(Description::class);
+    }
+
+    public function address()
+    {
+        return $this->belongsTo(Address::class);
     }
 }

@@ -22,6 +22,11 @@ return new class extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
             
+            $table->foreignId('address_id')
+                ->constrained()
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+            
             $table->string('invoice_number');
             $table->string('assignment_number');
 
@@ -42,10 +47,6 @@ return new class extends Migration
             $table->decimal('total_interpreter', 8, 2)->default(0);
             $table->decimal('total_coordinator', 8, 2)->default(0);
             
-            $table->string('address');
-            $table->string('city');
-            $table->string('state');
-            $table->string('zip_code');
             $table->text('comments')->nullable();
             $table->timestamps();
         });

@@ -26,4 +26,9 @@ class Payroll extends Model
     {
         return $this->hasMany(BankCheck::class);
     }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
 }

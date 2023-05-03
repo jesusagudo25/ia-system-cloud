@@ -192,11 +192,11 @@
                 <td width="4%" nowrap valign=bottom
                     style='width:4.2%; border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:15.4pt'>
                     <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span lang=EN-US
-                            style='font-size:8.0pt;color:black'>FOR</span></p>
+                            style='font-size:9.0pt;color:black'>FOR</span></p>
                 </td>
-                <td width="30%" nowrap colspan=7 valign=bottom style='width:30.26%; border-top:none;border-left:none;padding:0cm 5.4pt 0cm 5.4pt;height:15.4pt; border-bottom: 0.1px solid black;'>
+                <td width="30%" nowrap colspan=8 valign=bottom style='width:30%; border-top:none;border-left:none;padding:0cm 5.4pt 0cm 5.4pt;height:15.4pt; border-bottom: 0.1px solid black;'>
                     <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'>
-                        <span lang=EN-US style='font-size:8.0pt;color:black'>{{ $check->for }}</span>
+                        <span lang=EN-US style='font-size:9pt;color:black'>{{ $check->for }}</span>
                     </p>
                 </td>
                 <td width="30%" nowrap colspan=4 valign=bottom
@@ -278,6 +278,41 @@
                 <td width=0 style='border:none'></td>
                 <td width=0 style='border:none'></td>
             </tr>
+        </table>
+
+        <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
+                style='font-size:9.0pt;color:black'>&nbsp;</span></p>
+        <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
+                style='font-size:9.0pt;color:black'>&nbsp;</span></p>
+        <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
+        
+        <table border=0 style="margin-bottom: 60px; border-collapse:collapse;border:none; font-weight:bold; font-size: 9.0pt" cellspacing=0 cellpadding=0 width='100%'>
+            <tr>
+                <td
+                width=35%
+                >Annabelle Dutari</td>
+                <td style="text-align: left"> 70003823</td>
+                <td style="text-align: left">Mar 31, 2023</td>
+                <td style="text-align: right">Check No. 343232</td>
+            </tr>
+        </table>
+
+        <table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 width='100%'
+            style='width:100.0%;border-collapse:collapse;border:none'>
+            <tr style="font-size: 9.0pt;">
+                <th style="text-align: left;" width=20%>Document No.</th>
+                <th style="text-align: left;" width=15%>Date</th>
+                <th style="text-align: left;" width=15%>Posting Description</th>
+                <th style="text-align: right;">Net Amount</th>
+            </tr>
+            @foreach ($check->checkDetails as $checkDetail)
+            <tr style="font-size: 8.0pt">
+                <td  width=20%>70003823</td>
+                <td width=15%>Mar 31, 2023</td>
+                <td width=15%>Payment to Vendor</td>
+                <td style="text-align: right;" >1,000.00</td>
+            </tr>
+            @endforeach
         </table>
 
     </div>

@@ -6,6 +6,7 @@ use App\Models\BankCheck;
 use App\Models\Invoice;
 use App\Models\Payroll;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use NumberFormatter;
 use PDF;
 
@@ -34,14 +35,33 @@ class BankCheckController extends Controller
     {
         //
     }
-    
+
     /**
      * Show PDF
      */
 
-    public function pdf(Payroll $payroll){
-        
-        $pdf = PDF::loadView('pdf.bank-checks', [ 'checks' => $payroll->bankChecks()->get() ]);
+    public function pdf(Payroll $payroll)
+    {
+
+        $interpreters = Invoice::where('invoices.payroll_id', $payroll->id)
+            ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
+            ->join('interpreters', 'invoices.interpreter_id', '=', 'interpreters.id')
+            ->select('interpreters.*', 'invoice_details.*', 'invoices.*', \DB::raw('sum(invoice_details.total_interpreter) as checks'))
+            ->groupBy('interpreter_id', 'invoice_details.id')
+            ->get();
+
+        $coordinator = Invoice::where('invoices.payroll_id', $payroll->id)
+            ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
+            ->join('coordinators', 'invoices.coordinator_id', '=', 'coordinators.id')
+            ->select('coordinators.*', 'invoice_details.*', 'invoices.*', \DB::raw('sum(invoice_details.total_coordinator) as checks'))
+            ->groupBy('coordinator_id', 'invoice_details.id')
+            ->get();
+
+        $pdf = PDF::loadView('pdf.bank-checks', [
+            'checks' => $payroll->bankChecks()->get(),
+            'interpreters' => collect($interpreters)->groupBy('full_name'),
+            'coordinator' => collect($coordinator)->groupBy('full_name')
+        ]);
         $pdf->setPaper('letter', 'portrait');
         $pdf->setOptions([
             'isRemoteEnabled' => true,

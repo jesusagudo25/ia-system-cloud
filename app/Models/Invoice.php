@@ -47,4 +47,9 @@ class Invoice extends Model
     {
         return $this->hasMany(TempoInvoiceDetail::class);
     }
+
+    public function payroll()
+    {
+        return $this->belongsTo(Payroll::class);
+    }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\BankCheckController;
 use App\Http\Controllers\DescriptionController;
@@ -74,6 +75,7 @@ Route::controller(PayrollController::class)->group(function () {
     Route::get('payrolls', 'index');
     Route::get('payrolls/{payroll}', 'show');
     Route::get('/payrolls/{payroll}/download', 'pdf');
+    Route::post('/payrolls/review', 'review');
     Route::post('payrolls', 'store');
     Route::put('payrolls/{payroll}', 'update');
     Route::delete('payrolls/{payroll}', 'destroy');
@@ -86,4 +88,13 @@ Route::controller(BankCheckController::class)->group(function () {
     Route::post('bank-checks', 'store');
     Route::put('bank-checks/{bankCheck}', 'update');
     Route::delete('bank-checks/{bankCheck}', 'destroy');
+});
+
+Route::controller(AddressController::class)->group(function () {
+    Route::get('addresses', 'index');
+    Route::get('addresses/{address}', 'show');
+    Route::get('/addresses/search/{search}/', 'search');
+    Route::post('addresses', 'store');
+    Route::put('addresses/{address}', 'update');
+    Route::delete('addresses/{address}', 'destroy');
 });

@@ -29,6 +29,11 @@ return new class extends Migration
                 ->constrained()
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
+            $table->foreignId('payroll_id')
+                ->nullable()
+                ->constrained()
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->decimal('total_amount', 8, 2)->default(0);
             $table->string('status')->default('pending');
             /*

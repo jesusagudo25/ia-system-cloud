@@ -24,4 +24,9 @@ class BankCheck extends Model
     {
         return $this->belongsTo(Payroll::class);
     }
+
+    public function checkDetails()
+    {
+        return $this->hasMany(CheckDetail::class);
+    }
 }

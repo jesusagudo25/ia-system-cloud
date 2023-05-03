@@ -30,10 +30,16 @@ class InvoiceController extends Controller
         //Obtener el interprete que viene en el request
         //Si el valor es null, entonces hay que crearlo
         $interpreter_id = $request->has('interpreter_id') ? $request->interpreter_id : null;
+        $address_id = $request->has('address_id') ? $request->address_id : null;
 
         if (empty($interpreter_id)) {
             //Crear el interprete con los datos del request
             //Obtener el id del interprete creado
+        }
+
+        if (empty($address_id)) {
+            //Crear la direccion con los datos del request
+            //Obtener el id de la direccion creada
         }
 
         $invoice = Invoice::create([
@@ -61,10 +67,7 @@ class InvoiceController extends Controller
             'total_amount_hours' => $request->total_amount_hours,
             'total_interpreter' => $request->total_interpreter,
             'total_coordinator' => $request->total_coordinator,
-            'address' => $request->address,
-            'city' => $request->city,
-            'state' => $request->state,
-            'zip_code' => $request->zip_code,
+            'address_id' => $address_id,
             'comments' => $request->comments
         ]);
 
