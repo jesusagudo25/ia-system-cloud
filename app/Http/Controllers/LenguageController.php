@@ -15,12 +15,26 @@ class LenguageController extends Controller
         return Lenguage::all();
     }
 
+    public function indexStatus()
+    {
+        return Lenguage::where('status', 1)->get();
+    }
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'price_per_hour' => 'required',
+        ]);
+        $lenguage = Lenguage::create($request->all());
+
+        return response()->json([
+            'message' => 'Lenguage created successfully',
+            'lenguage' => $lenguage
+        ], 201);
     }
 
     /**
@@ -36,7 +50,12 @@ class LenguageController extends Controller
      */
     public function update(Request $request, Lenguage $lenguage)
     {
-        //
+        Lenguage::where('id', $lenguage->id)->update($request->all());
+
+        return response()->json([
+            'message' => 'Lenguage updated successfully',
+            'lenguage' => $lenguage
+        ], 200);
     }
 
     /**

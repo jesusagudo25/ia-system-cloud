@@ -19,6 +19,7 @@ return new class extends Migration
                 ->onUpdate('cascade');
             $table->date('date')->default(now());
             $table->string('pay_to');
+            $table->string('ssn');
             $table->decimal('amount', 8, 2);
             $table->string('amount_in_words');
             $table->string('for');

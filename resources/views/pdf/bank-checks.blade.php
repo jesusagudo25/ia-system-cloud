@@ -49,6 +49,12 @@
             font-family: 'Calibri-Regular', sans-serif;
         }
 
+        td,
+        tr,
+        th {
+            font-family: 'Calibri-Regular', sans-serif;
+        }
+
         .msoFalse {
             margin-top: 0cm;
             margin-right: 0cm;
@@ -290,14 +296,14 @@
             <tr>
                 <td
                 width=35%
-                >Annabelle Dutari</td>
-                <td style="text-align: left"> 70003823</td>
-                <td style="text-align: left">Mar 31, 2023</td>
-                <td style="text-align: right">Check No. 343232</td>
+                >{{ $check->pay_to }}</td>
+                <td style="text-align: left"> {{ $check->ssn }}</td>
+                <td style="text-align: left">{{ \Carbon\Carbon::parse($check->check_date)->format('M d, Y') }}</td>
+                <td style="text-align: right">Check No. {{ $check->id }}</td>
             </tr>
         </table>
 
-        <table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 width='100%'
+        <table class=MsoNormalTable cellspacing=0 cellpadding=0 width='100%'
             style='width:100.0%;border-collapse:collapse;border:none'>
             <tr style="font-size: 9.0pt;">
                 <th style="text-align: left;" width=20%>Document No.</th>
@@ -307,12 +313,22 @@
             </tr>
             @foreach ($check->checkDetails as $checkDetail)
             <tr style="font-size: 8.0pt">
-                <td  width=20%>70003823</td>
-                <td width=15%>Mar 31, 2023</td>
-                <td width=15%>Payment to Vendor</td>
-                <td style="text-align: right;" >1,000.00</td>
+                <td  width=20%>{{ $checkDetail->assignment }}</td>
+                <td width=15%>{{ $checkDetail->closing_date }}</td>
+                <td width=15%>{{ $checkDetail->date_service }}</td>
+                <td style="text-align: right;" >{{ $checkDetail->total_amount }}</td>
             </tr>
             @endforeach
+            <tr style="font-size: 9.0pt;">
+                <td colspan=3 style="text-align: right; padding-top: 15px; padding-right:10px;"></td>
+                <td style="text-align: right; padding-top: 15px; padding-right:10px;">
+                    <b>Total</b>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {{ $check->amount }}
+                </td>
+            </tr>
         </table>
 
     </div>

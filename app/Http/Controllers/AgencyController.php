@@ -12,7 +12,12 @@ class AgencyController extends Controller
      */
     public function index()
     {
-        //
+        return Agency::all();
+    }
+
+    public function indexStatus()
+    {
+        return Agency::where('status', 1)->get();
     }
 
     /**
@@ -20,7 +25,21 @@ class AgencyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'phone_number' => 'required',
+            'email' => 'required',
+            'address' => 'required',
+            'city' => 'required',
+            'state' => 'required',
+            'zip_code' => 'required'
+        ]);
+        $agency = Agency::create($request->all());
+
+        return response()->json([
+            'message' => 'Agency created successfully',
+            'agency' => $agency
+        ], 201);
     }
 
     /**
@@ -51,7 +70,12 @@ class AgencyController extends Controller
      */
     public function update(Request $request, Agency $agency)
     {
-        //
+        Agency::where('id', $agency->id)->update($request->all());
+
+        return response()->json([
+            'message' => 'Agency updated successfully',
+            'agency' => $agency
+        ], 200);
     }
 
     /**

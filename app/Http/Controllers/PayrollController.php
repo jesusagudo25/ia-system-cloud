@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BankCheck;
+use App\Models\CheckDetail;
 use App\Models\Interpreter;
 use App\Models\Invoice;
 use App\Models\InvoiceDetail;
@@ -28,7 +29,7 @@ class PayrollController extends Controller
     {
         /* Se debe trabajar en base a la lista de servicios seleccionados por el usuario */
 
-        /* Se obtiene el total de la planilla */
+        /* Se obtiene el total de la planilla para asignarlo al payroll */
         $total = Invoice::whereIn('invoices.id', $request->services)
         ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
         ->selectRaw('sum(invoices.total_amount) as total_amount')
@@ -44,7 +45,7 @@ class PayrollController extends Controller
 
         Invoice::whereIn('id', $request->services)->update(['payroll_id' => $payroll->id]);
 
-        /* Se obtiene los servicios proporcionados por los interpretes de acuerdo al rango de fecha */
+        /* Se obtiene los servicios proporcionados por los interpretes de acuerdo a la lista de servicios seleccionados */
         $interpreters = Invoice::whereIn('invoices.id', $request->services)
         ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
         ->join('interpreters', 'invoices.interpreter_id', '=', 'interpreters.id')
@@ -52,13 +53,35 @@ class PayrollController extends Controller
         ->groupBy('interpreters.id')
         ->get();
 
-        /* Se obtiene los servicios proporcionados por los coordinadores de acuerdo al rango de fecha */
+        $interpreterDetails = Invoice::whereIn('invoices.id', $request->services)
+        ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
+        ->join('interpreters', 'invoices.interpreter_id', '=', 'interpreters.id')
+        ->selectRaw('sum(invoice_details.total_interpreter) as total_amount, interpreters.id AS interpreter_id, invoice_details.*')
+        ->groupBy('interpreters.id', 'invoice_details.id')
+        ->get();
+        
+        $interpreters = collect($interpreters)->each(function ($item, $key) use ($interpreterDetails) {
+            $item->details = $interpreterDetails->where('interpreter_id', $item->id);
+        });
+
+        /* Se obtiene los servicios proporcionados por los coordinadores de acuerdo a la lista de servicios seleccionados */
         $coordinator = Invoice::whereIn('invoices.id', $request->services)
         ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
         ->join('coordinators', 'invoices.coordinator_id', '=', 'coordinators.id')
         ->selectRaw('sum(invoice_details.total_coordinator) as total_amount, coordinators.*')
         ->groupBy('coordinators.id')
         ->get();
+
+        $coordinatorDetails = Invoice::whereIn('invoices.id', $request->services)
+        ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id') 
+        ->join('coordinators', 'invoices.coordinator_id', '=', 'coordinators.id')
+        ->selectRaw('sum(invoice_details.total_coordinator) as total_amount, coordinators.id AS coordinator_id, invoice_details.*')
+        ->groupBy('coordinators.id', 'invoice_details.id')
+        ->get();
+
+        $coordinator = collect($coordinator)->each(function ($item, $key) use ($coordinatorDetails) {
+            $item->details = $coordinatorDetails->where('coordinator_id', $item->id);
+        });
 
         /* Se recorren los interpretes y se crea su respectivo cheque */
         foreach ($interpreters as $interpreter) {
@@ -68,7 +91,7 @@ class PayrollController extends Controller
             $amountInWords = ucwords((new NumberFormatter('en_IN', NumberFormatter::SPELLOUT))->format($totalAmount[0]));
             $amountInWords = $amountInWords . ' ' . 'and' . ' ' . $decimal;
     
-            BankCheck::create([
+            $bankCheck = BankCheck::create([
                 'payroll_id' => $payroll->id,
                 'date' => Carbon::now(),
                 'amount' => $interpreter->total_amount,
@@ -78,6 +101,16 @@ class PayrollController extends Controller
                 'routing_number' => 'C1111C',
                 'account_number' => 'A123456789A',
             ]);
+
+            foreach ($interpreter->details as $detail) {
+                CheckDetail::create([
+                    'bank_check_id' => $bankCheck->id,
+                    'assignment' => $detail->assignment_number,
+                    'closing_date' => $request->end_date,
+                    'date_service' => $detail->date_of_service_provided,
+                    'total_amount' => $detail->total_interpreter,
+                ]);
+            }
         }
 
         /* Se reccoren los coordinadores y se crea su respectivo cheque */
@@ -86,7 +119,7 @@ class PayrollController extends Controller
             $decimal = $totalAmount[1] . '/' . 100;
             $amountInWords = ucwords((new NumberFormatter('en_IN', NumberFormatter::SPELLOUT))->format($totalAmount[0]));
             $amountInWords = $amountInWords . ' ' . 'and' . ' ' . $decimal;
-            BankCheck::create([
+            $bankCheck = BankCheck::create([
                 'payroll_id' => $payroll->id,
                 'date' => Carbon::now(),
                 'amount' => $coordinator->total_amount,
@@ -96,6 +129,16 @@ class PayrollController extends Controller
                 'routing_number' => 'C1111C',
                 'account_number' => 'A123456789A',
             ]);
+
+            foreach ($coordinator->details as $detail) {
+                CheckDetail::create([
+                    'bank_check_id' => $bankCheck->id,
+                    'assignment' => $detail->assignment_number,
+                    'closing_date' => $request->end_date,
+                    'date_service' => $detail->date_of_service_provided,
+                    'total_amount' => $detail->total_coordinator,
+                ]);
+            }
         }
 
         return response()->json([

@@ -12,7 +12,12 @@ class InterpreterController extends Controller
      */
     public function index()
     {
-        //
+        return Interpreter::all();
+    }
+
+    public function indexStatus()
+    {
+        return Interpreter::where('status', 1)->get();
     }
 
     /**
@@ -20,7 +25,8 @@ class InterpreterController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $interpreter = Interpreter::create($request->all());
+        return response()->json($interpreter, 201);
     }
 
     /**
@@ -45,7 +51,8 @@ class InterpreterController extends Controller
      */
     public function update(Request $request, Interpreter $interpreter)
     {
-        //
+        Interpreter::where('id', $interpreter->id)->update($request->all());
+        return response()->json($interpreter, 200);
     }
 
     /**

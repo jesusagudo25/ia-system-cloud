@@ -17,9 +17,9 @@ class InvoiceController extends Controller
         return Invoice::all()->load('agency', 'interpreter', 'coordinator', 'invoiceDetails');
     }
 
-    public function closed()
+    public function indexPaid()
     {
-        return Invoice::where('status', 'closed')->get()->load('agency', 'interpreter', 'coordinator', 'invoiceDetails');
+        return Invoice::where('status', 'paid')->get()->load('agency', 'interpreter', 'coordinator', 'invoiceDetails');
     }
 
     /**

@@ -10,8 +10,8 @@ class Interpreter extends Model
     use HasFactory;
 
     protected $fillable = [
-        'lenguage_id',
         'full_name',
+        'lenguage_id',
         'phone_number',
         'email',
         'ssn',

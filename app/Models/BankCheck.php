@@ -13,6 +13,7 @@ class BankCheck extends Model
         'payroll_id',
         'date',
         'pay_to',
+        'ssn',
         'amount',
         'amount_in_words',
         'for',

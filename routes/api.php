@@ -8,6 +8,7 @@ use App\Http\Controllers\InterpreterController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LenguageController;
 use App\Http\Controllers\PayrollController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::controller(LenguageController::class)->group(function () {
     Route::get('lenguages', 'index');
+    Route::get('lenguages/status', 'indexStatus');
     Route::get('lenguages/{lenguage}', 'show');
     Route::post('lenguages', 'store');
     Route::put('lenguages/{lenguage}', 'update');
@@ -36,6 +38,7 @@ Route::controller(LenguageController::class)->group(function () {
 
 Route::controller(AgencyController::class)->group(function () {
     Route::get('agencies', 'index');
+    Route::get('agencies/status', 'indexStatus');
     Route::get('agencies/{agency}', 'show');
     Route::get('/agencies/search/{search}/', 'search');
     Route::post('agencies', 'store');
@@ -45,6 +48,7 @@ Route::controller(AgencyController::class)->group(function () {
 
 Route::controller(InterpreterController::class)->group(function () {
     Route::get('interpreters', 'index');
+    Route::get('interpreters/status', 'indexStatus');
     Route::get('interpreters/{interpreter}', 'show');
     Route::get('/interpreters/{state}/{lenguage}/{search}/', 'search');
     Route::post('interpreters', 'store');
@@ -54,6 +58,7 @@ Route::controller(InterpreterController::class)->group(function () {
 
 Route::controller(DescriptionController::class)->group(function () {
     Route::get('descriptions', 'index');
+    Route::get('descriptions/status', 'indexStatus');
     Route::get('descriptions/{description}', 'show');
     Route::get('/descriptions/search/{search}/', 'search');
     Route::post('descriptions', 'store');
@@ -63,7 +68,7 @@ Route::controller(DescriptionController::class)->group(function () {
 
 Route::controller(InvoiceController::class)->group(function () {
     Route::get('invoices', 'index');
-    Route::get('invoices/closed', 'closed');
+    Route::get('invoices/paid', 'indexPaid');
     Route::get('invoices/{invoice}', 'show');
     Route::get('/invoices/{invoice}/download', 'pdf');
     Route::post('invoices', 'store');
@@ -97,4 +102,13 @@ Route::controller(AddressController::class)->group(function () {
     Route::post('addresses', 'store');
     Route::put('addresses/{address}', 'update');
     Route::delete('addresses/{address}', 'destroy');
+});
+
+Route::controller(UserController::class)->group(function () {
+    Route::get('users', 'index');
+    Route::get('users/{user}', 'show');
+    Route::get('/users/search/{search}/', 'search');
+    Route::post('users', 'store');
+    Route::put('users/{user}', 'update');
+    Route::delete('users/{user}', 'destroy');
 });

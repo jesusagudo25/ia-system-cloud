@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->decimal('price_per_hour', 8, 2);
+            $table->boolean('status')->default(1);
             $table->timestamps();
         });
     }
