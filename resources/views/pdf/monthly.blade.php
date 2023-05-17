@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Monthly Payroll: {{ $payroll->start_date }} to {{ $payroll->end_date }}</title>
+    <title>Monthly Payroll: {{ $report->start_date }} to {{ $report->end_date }}</title>
     <style>
         /* Font Definitions */
         @font-face {
@@ -66,7 +66,7 @@
         <div class=WordSection1>
             <p class=MsoNormal align=center style='text-align:center'>
             <b><span style='font-size:12.0pt;line-height:107%;font-family:"Arial",sans-serif'>Monthly Payroll:
-                    {{ $payroll->start_date }} to {{ $payroll->end_date }}</span>
+                    {{ $report->start_date }} to {{ $report->end_date }}</span>
             </b>
             </p>
             <hr>
@@ -91,7 +91,7 @@
                         <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center; line-height:normal'>
                             <i>
                                 <span style='font-size:13.0pt;font-family:"Arial",sans-serif; color:black'>
-                                    {{ $payroll->start_date }} to {{ $end_date_first }}
+                                    {{ $report->start_date }} to {{ $end_date_first }}
                                 </span>
                             </i>
                         </p>
@@ -233,7 +233,7 @@
                         <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center; line-height:normal'>
                             <i>
                                 <span style='font-size:13.0pt;font-family:"Arial",sans-serif; color:black'>
-                                    {{ $start_date_second }} to {{ $payroll->end_date }}
+                                    {{ $start_date_second }} to {{ $report->end_date }}
                                 </span>
                             </i>
                         </p>
@@ -386,7 +386,7 @@
         <div class=WordSection1>
             <p class=MsoNormal align=center style='text-align:center'>
             <b><span style='font-size:12.0pt;line-height:107%;font-family:"Arial",sans-serif'>Monthly Payroll:
-                    {{ $payroll->start_date }} to {{ $payroll->end_date }}</span>
+                    {{ $report->start_date }} to {{ $report->end_date }}</span>
             </b>
             </p>
             <hr>
@@ -411,7 +411,7 @@
                         <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center; line-height:normal'>
                             <i>
                                 <span style='font-size:13.0pt;font-family:"Arial",sans-serif; color:black'>
-                                    {{ $payroll->start_date }} to {{ $end_date_first }}
+                                    {{ $report->start_date }} to {{ $end_date_first }}
                                 </span>
                             </i>
                         </p>
@@ -464,6 +464,7 @@
                     </td>
                 </tr>
 
+                @if (count ($coordinator_first) > 0)
                 @foreach ($coordinator_first as $service)
                 <tr>
                     <td width="14%"
@@ -491,7 +492,18 @@
                     </td>
                 </tr>
                 @endforeach
-
+                @else
+                /* No services */
+                <tr>
+                    <td width="100%" style='width:100%;border:solid windowtext 1.0pt;border-top: none;padding:0cm 5.4pt 0cm 5.4pt' colspan="4">
+                        <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center; line-height:normal'>
+                            <span style='font-size:9.0pt;font-family:"Arial",sans-serif'>
+                                No services provided for this month.
+                            </span>
+                        </p>
+                    </td>
+                </tr>
+                @endif
                 <tr>
                     <td width="14%" valign=top style='width:14.4%;border:solid windowtext 1.0pt; border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
                         <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span style='font-family:"Arial",sans-serif'>&nbsp;</span></p>
@@ -544,7 +556,7 @@
                         <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center; line-height:normal'>
                             <i>
                                 <span style='font-size:13.0pt;font-family:"Arial",sans-serif; color:black'>
-                                    {{ $start_date_second }} to {{ $payroll->end_date }}
+                                    {{ $start_date_second }} to {{ $report->end_date }}
                                 </span>
                             </i>
                         </p>
@@ -597,6 +609,7 @@
                     </td>
                 </tr>
 
+                @if (count ($coordinator_second) > 0)
                 @foreach ($coordinator_second as $service)
                 <tr>
                     <td width="14%"
@@ -624,7 +637,18 @@
                     </td>
                 </tr>
                 @endforeach
-
+                @else
+                /* No services */
+                <tr>
+                    <td width="100%" style='width:100%;border:solid windowtext 1.0pt;border-top: none;padding:0cm 5.4pt 0cm 5.4pt' colspan="4">
+                        <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center; line-height:normal'>
+                            <span style='font-size:9.0pt;font-family:"Arial",sans-serif'>
+                                No services provided for this month.
+                            </span>
+                        </p>
+                    </td>
+                </tr>
+                @endif
                 <tr>
                     <td width="14%" valign=top style='width:14.4%;border:solid windowtext 1.0pt; border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
                         <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span style='font-family:"Arial",sans-serif'>&nbsp;</span></p>

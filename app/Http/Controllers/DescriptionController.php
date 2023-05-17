@@ -46,7 +46,10 @@ class DescriptionController extends Controller
 
     public function search($search)
     {
-        return Description::where('title', 'like', '%' . $search . '%')->get();
+        return Description::where([
+            ['title', 'like', '%' . $search . '%'],
+            ['status', 1]
+        ])->get();
     }
 
     /**

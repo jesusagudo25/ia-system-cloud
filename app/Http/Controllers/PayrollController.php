@@ -96,6 +96,7 @@ class PayrollController extends Controller
                 'date' => Carbon::now(),
                 'amount' => $interpreter->total_amount,
                 'amount_in_words' => $amountInWords,
+                'ssn' => $interpreter->ssn,
                 'pay_to' => $interpreter->full_name,
                 'for' => 'Interpreting services provided from '. $request->start_date .' to '. $request->end_date,
                 'routing_number' => 'C1111C',
@@ -124,6 +125,7 @@ class PayrollController extends Controller
                 'date' => Carbon::now(),
                 'amount' => $coordinator->total_amount,
                 'amount_in_words' => $amountInWords,
+                'ssn' => $coordinator->ssn, // '123-45-6789
                 'pay_to' => $coordinator->full_name,
                 'for' => 'Interpreting services provided from '. $request->start_date .' to '. $request->end_date,
                 'routing_number' => 'C1111C',
@@ -162,6 +164,7 @@ class PayrollController extends Controller
         */
 
         $review = Invoice::whereDate('date_of_service_provided', '<=', Carbon::now()->subDays(30))
+        ->whereIn('invoices.status', ['paid', 'pending'])
         ->where('invoices.payroll_id', null)
         ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
         ->get()
@@ -192,6 +195,7 @@ class PayrollController extends Controller
 
         if ($days <= 15) {
             $interpreters = Invoice::where('invoices.payroll_id', $payroll->id)
+            ->whereIn('invoices.status', ['paid', 'pending'])
                 ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
                 ->join('descriptions', 'invoice_details.description_id', '=', 'descriptions.id')
                 ->join('interpreters', 'invoices.interpreter_id', '=', 'interpreters.id')
@@ -200,6 +204,7 @@ class PayrollController extends Controller
                 ->groupBy('interpreter_id');
 
             $coordinator = Invoice::where('invoices.payroll_id', $payroll->id)
+            ->whereIn('invoices.status', ['paid', 'pending'])
                 ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
                 ->join('descriptions', 'invoice_details.description_id', '=', 'descriptions.id')
                 ->join('coordinators', 'invoices.coordinator_id', '=', 'coordinators.id')

@@ -11,7 +11,6 @@ class Report extends Model
 
     protected $fillable = [
         'user_id',
-        'description',
         'type',
         'start_date',
         'end_date',

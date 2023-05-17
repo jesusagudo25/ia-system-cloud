@@ -18,21 +18,23 @@ return new class extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
             $table->foreignId('description_id')
+                ->nullable()
                 ->constrained()
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
             $table->foreignId('address_id')
+                ->nullable()
                 ->constrained()
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
             
-            $table->date('date_of_service_provided');
-            $table->time('arrival_time');
-            $table->time('start_time');
-            $table->time('end_time');
+            $table->date('date_of_service_provided')->nullable();
+            $table->time('arrival_time')->nullable();
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
 
-            $table->integer('travel_time_to_assignment');
-            $table->integer('time_back_from_assignment');
+            $table->integer('travel_time_to_assignment')->nullable();
+            $table->integer('time_back_from_assignment')->nullable();
 
             $table->integer('travel_mileage')->default(0);
             $table->decimal('cost_per_mile', 8, 3);

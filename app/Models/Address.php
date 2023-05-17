@@ -13,6 +13,7 @@ class Address extends Model
         'address',
         'city',
         'state',
+        'state_abbr',
         'zip_code',
     ];
 

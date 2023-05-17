@@ -40,8 +40,11 @@ class InterpreterController extends Controller
     public function search($state, $lenguage, $search)
     {
         $interpreters = Interpreter::where('state', $state)
-            ->where('lenguage_id', $lenguage)
-            ->where('full_name', 'like', '%' . $search . '%')
+            ->where([
+                ['lenguage_id', $lenguage],
+                ['full_name', 'like', '%' . $search . '%'],
+                ['status', 1]
+            ])
             ->get();
         return response()->json($interpreters);
     }

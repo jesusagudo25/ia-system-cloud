@@ -8,6 +8,7 @@ use App\Http\Controllers\InterpreterController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LenguageController;
 use App\Http\Controllers\PayrollController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -73,6 +74,7 @@ Route::controller(InvoiceController::class)->group(function () {
     Route::get('/invoices/{invoice}/download', 'pdf');
     Route::post('invoices', 'store');
     Route::put('invoices/{invoice}', 'update');
+    Route::put('invoices/new-status/{invoice}', 'newStatus');
     Route::delete('invoices/{invoice}', 'destroy');
 });
 
@@ -111,4 +113,13 @@ Route::controller(UserController::class)->group(function () {
     Route::post('users', 'store');
     Route::put('users/{user}', 'update');
     Route::delete('users/{user}', 'destroy');
+});
+
+Route::controller(ReportController::class)->group(function () {
+    Route::get('reports', 'index');
+    Route::get('reports/{report}', 'show');
+    Route::get('/reports/{report}/download', 'pdf');
+    Route::post('reports', 'store');
+    Route::put('reports/{report}', 'update');
+    Route::delete('reports/{report}', 'destroy');
 });
