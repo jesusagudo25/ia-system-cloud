@@ -3,6 +3,7 @@
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\BankCheckController;
+use App\Http\Controllers\CoordinatorController;
 use App\Http\Controllers\DescriptionController;
 use App\Http\Controllers\InterpreterController;
 use App\Http\Controllers\InvoiceController;
@@ -115,8 +116,18 @@ Route::controller(UserController::class)->group(function () {
     Route::delete('users/{user}', 'destroy');
 });
 
+Route::controller(CoordinatorController::class)->group(function () {
+    Route::get('coordinators', 'index');
+    Route::get('coordinators/{coordinator}', 'show');
+    Route::get('/coordinators/search/{search}/', 'search');
+    Route::post('coordinators', 'store');
+    Route::put('coordinators/{coordinator}', 'update');
+    Route::delete('coordinators/{coordinator}', 'destroy');
+});
+
 Route::controller(ReportController::class)->group(function () {
     Route::get('reports', 'index');
+    Route::get('reports/dashboards', 'indexDashboards');
     Route::get('reports/{report}', 'show');
     Route::get('/reports/{report}/download', 'pdf');
     Route::post('reports', 'store');

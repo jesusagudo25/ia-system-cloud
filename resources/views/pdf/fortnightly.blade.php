@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Fortnightly Payroll: {{ $payroll->start_date }} to {{ $payroll->end_date }}</title>
+    <title>Fortnightly Payroll: {{ Carbon\Carbon::parse($payroll->start_date)->format('m-d-Y') }} to {{ Carbon\Carbon::parse($payroll->end_date)->format('m-d-Y') }}</title>
     <style>
         /* Font Definitions */
         @font-face {
@@ -63,7 +63,7 @@
         <div class=WordSection1>
             <p class=MsoNormal align=center style='text-align:center'><b>
                 <span style='font-size:12.0pt;line-height:107%;font-family:"Arial",sans-serif'>
-                    Fortnightly Payroll: {{ $payroll->start_date }} to {{ $payroll->end_date }}
+                    Fortnightly Payroll: {{ Carbon\Carbon::parse($payroll->start_date)->format('m-d-Y') }} to {{ Carbon\Carbon::parse($payroll->end_date)->format('m-d-Y') }}
                 </span></b>
             </p>
             <hr>
@@ -86,7 +86,7 @@
                         <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center; line-height:normal'>
                             <i>
                                 <span style='font-size:13.0pt;font-family:"Arial",sans-serif; color:black'>
-                                    {{ $payroll->start_date }} to {{ $payroll->end_date }}
+                                    {{ Carbon\Carbon::parse($payroll->start_date)->format('m-d-Y') }} to {{ Carbon\Carbon::parse($payroll->end_date)->format('m-d-Y') }}
                                 </span>
                             </i>
                         </p>
@@ -143,7 +143,7 @@
                     <td width="14%"
                         style='width:14.4%;border:solid windowtext 1.0pt;border-top: none;padding:0cm 5.4pt 0cm 5.4pt'>
                         <p class=MsoNormal align=right style='margin-bottom:0cm;text-align:right; line-height:normal'>
-                            <span style='font-size:9.0pt;font-family:"Arial",sans-serif'>{{ $assignment['date_of_service_provided'] }}</span>
+                            <span style='font-size:9.0pt;font-family:"Arial",sans-serif'>{{ Carbon\Carbon::parse($assignment['date_of_service_provided'])->format('m-d-Y') }}</span>
                         </p>
                     </td>
                     <td width="22%" style='width:22.48%;border-top:none;border-left:none; border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt; padding:0cm 5.4pt 0cm 5.4pt'>
@@ -212,7 +212,7 @@
         <div class=WordSection1>
             <p class=MsoNormal align=center style='text-align:center'><b>
                 <span style='font-size:12.0pt;line-height:107%;font-family:"Arial",sans-serif'>
-                    Fortnightly Payroll: {{ $payroll->start_date }} to {{ $payroll->end_date }}
+                    Fortnightly Payroll: {{ Carbon\Carbon::parse($payroll->start_date)->format('m-d-Y') }} to {{ Carbon\Carbon::parse($payroll->end_date)->format('m-d-Y') }}
                 </span></b>
             </p>
             <hr>
@@ -237,7 +237,7 @@
                         <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center; line-height:normal'>
                             <i>
                                 <span style='font-size:13.0pt;font-family:"Arial",sans-serif; color:black'>
-                                    {{ $payroll->start_date }} to {{ $payroll->end_date }}
+                                    {{ Carbon\Carbon::parse($payroll->start_date)->format('m-d-Y') }} to {{ Carbon\Carbon::parse($payroll->end_date)->format('m-d-Y') }}
                                 </span>
                             </i>
                         </p>
@@ -297,7 +297,7 @@
                     <td width="14%"
                         style='width:14.4%;border:solid windowtext 1.0pt;border-top: none;padding:0cm 5.4pt 0cm 5.4pt'>
                         <p class=MsoNormal align=right style='margin-bottom:0cm;text-align:right; line-height:normal'>
-                            <span style='font-size:9.0pt;font-family:"Arial",sans-serif'>{{ $service['date_of_service_provided'] }}</span>
+                            <span style='font-size:9.0pt;font-family:"Arial",sans-serif'>{{ Carbon\Carbon::parse($service['date_of_service_provided'])->format('m-d-Y') }}</span>
                         </p>
                     </td>
                     <td width="22%" style='width:22.48%;border-top:none;border-left:none; border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt; padding:0cm 5.4pt 0cm 5.4pt'>

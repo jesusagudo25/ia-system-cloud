@@ -139,7 +139,7 @@
                 </td>
                 <td width="17%" colspan=3 valign=top style='width:17.76%;border-top:none; border-left:none; padding:0cm 5.4pt 0cm 5.4pt '>
                     <p class=MsoNormal align=right style='margin-bottom:0cm;text-align:right; text-indent:8.0pt;line-height:normal'>
-                        <i><span lang=EN-US style='font-size: 8.0pt;'>{{ $check->date }}</span></i>
+                        <i><span lang=EN-US style='font-size: 8.0pt;'>{{ Carbon\Carbon::parse($check->check_date)->format('m-d-Y') }}</span></i>
                     </p>
                 </td>
                 <td width="7%" nowrap colspan=3 valign=bottom style='width:7.1%;border-top: none;border-left:none; padding:0cm 5.4pt 0cm 5.4pt'>
@@ -314,8 +314,8 @@
             @foreach ($check->checkDetails as $checkDetail)
             <tr style="font-size: 8.0pt">
                 <td  width=20%>{{ $checkDetail->assignment }}</td>
-                <td width=15%>{{ $checkDetail->closing_date }}</td>
-                <td width=15%>{{ $checkDetail->date_service }}</td>
+                <td width=15%>{{ Carbon\Carbon::parse($checkDetail->closing_date)->format('m-d-Y') }}</td>
+                <td width=15%>{{ Carbon\Carbon::parse($checkDetail->date_service)->format('m-d-Y') }}</td>
                 <td style="text-align: right;" >{{ $checkDetail->total_amount }}</td>
             </tr>
             @endforeach

@@ -12,7 +12,7 @@ class CoordinatorController extends Controller
      */
     public function index()
     {
-        //
+        return Coordinator::all();
     }
 
     /**
@@ -20,7 +20,7 @@ class CoordinatorController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $coordinator = Coordinator::create($request->all());
     }
 
     /**
@@ -28,7 +28,7 @@ class CoordinatorController extends Controller
      */
     public function show(Coordinator $coordinator)
     {
-        //
+        return Coordinator::findOrFail($coordinator->id);
     }
 
     /**
@@ -36,7 +36,7 @@ class CoordinatorController extends Controller
      */
     public function update(Request $request, Coordinator $coordinator)
     {
-        //
+        Coordinator::where('id', $coordinator->id)->update($request->all());
     }
 
     /**

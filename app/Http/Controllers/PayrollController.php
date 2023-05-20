@@ -98,7 +98,7 @@ class PayrollController extends Controller
                 'amount_in_words' => $amountInWords,
                 'ssn' => $interpreter->ssn,
                 'pay_to' => $interpreter->full_name,
-                'for' => 'Interpreting services provided from '. $request->start_date .' to '. $request->end_date,
+                'for' => 'Interpreting services provided from '. Carbon::parse($request->start_date)->format('m-d-Y') .' to '. Carbon::parse($request->end_date)->format('m-d-Y'),
                 'routing_number' => 'C1111C',
                 'account_number' => 'A123456789A',
             ]);
@@ -127,7 +127,7 @@ class PayrollController extends Controller
                 'amount_in_words' => $amountInWords,
                 'ssn' => $coordinator->ssn, // '123-45-6789
                 'pay_to' => $coordinator->full_name,
-                'for' => 'Interpreting services provided from '. $request->start_date .' to '. $request->end_date,
+                'for' => 'Interpreting services provided from '. Carbon::parse($request->start_date)->format('m-d-Y') .' to '. Carbon::parse($request->end_date)->format('m-d-Y'),
                 'routing_number' => 'C1111C',
                 'account_number' => 'A123456789A',
             ]);

@@ -643,7 +643,7 @@
                     style='width:389.9pt;border:none;border-bottom:solid #BDD6EE 1.0pt;
           padding:0cm 0cm 0cm 0cm'>
                     <h5 style='margin-bottom:0cm;line-height:normal'><em><span lang=EN>Date of Service Provided:
-                            </span></em><span>{{ $details->date_of_service_provided,  }}</span></h5>
+                            </span></em><span> {{\Carbon\Carbon::parse($details->date_of_service_provided)->format('m-d-Y') }}</span></h5>
                 </td>
                 <td width=179 valign=top
                     style='width:134.6pt;border:none;border-bottom:solid #BDD6EE 1.0pt;
@@ -734,7 +734,7 @@
                     style='width:389.9pt;border:none;border-bottom:solid #BDD6EE 1.0pt;
           padding:0cm 0cm 0cm 0cm'>
                     <h5 style='margin-bottom:0cm;line-height:normal'><em><span lang=EN>Location:
-                            </span></em><span>{{ $details->address }}</span></h5>
+                            </span></em><span>{{ $details->address->address }}</span></h5>
                 </td>
                 <td width=179 valign=top
                     style='width:134.6pt;border:none;border-bottom:solid #BDD6EE 1.0pt;
@@ -749,7 +749,7 @@
           padding:0cm 0cm 0cm 0cm'>
                     <h5 style='margin-bottom:0cm;line-height:normal'>
                         <em><span lang=EN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            </span></em><span>{{ $details->city }}, {{ $details->state }} {{ $details->zip_code }}</span>
+                            </span></em><span>{{ $details->address->city }}, {{ $details->address->state }} {{ $details->address->zip_code }}</span>
                         </h5>
                 </td>
                 <td width=179 valign=top
