@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AgencyController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BankCheckController;
 use App\Http\Controllers\CoordinatorController;
 use App\Http\Controllers\DescriptionController;
@@ -25,8 +26,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function(){
+    Route::post('/logout', [AuthController::class,'logout']);
+});
+
+Route::controller(AuthController::class)->group(function(){
+    Route::post('/login', 'login');
+    Route::post('/forgot-password', 'forgotPassword');
+    Route::post('/reset-password', 'resetPassword');
+    Route::get('/validate-token', 'validateToken');
 });
 
 Route::controller(LenguageController::class)->group(function () {
@@ -110,6 +118,7 @@ Route::controller(AddressController::class)->group(function () {
 Route::controller(UserController::class)->group(function () {
     Route::get('users', 'index');
     Route::get('users/{user}', 'show');
+    Route::put('/users/{user}/password','updatePassword');
     Route::get('/users/search/{search}/', 'search');
     Route::post('users', 'store');
     Route::put('users/{user}', 'update');
