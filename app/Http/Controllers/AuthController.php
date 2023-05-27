@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Mail\ForgotPasswordMailable;
 use App\Models\PasswordReset;
+use App\Models\PersonalAccess;
+use App\Models\PersonalAccessToken;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,6 +34,20 @@ class AuthController extends Controller
                 'message' => 'Invalid login details'
             ], 401);
         }
+
+        //Validar si el usuario tiene un token de acceso
+        $token = PersonalAccessToken::where('tokenable_id', Auth::id())->first();
+
+        if ($token) {
+            $token->delete();
+
+            return response()->json([
+                'status' => 'wrong',
+                'message' => 'User already logged in, for security reasons you have been logged out'
+            ], 401);
+        }
+
+        //Crear un nuevo token de acceso
 
         $token = Auth::user()->createToken(Auth::id())->plainTextToken;
         $user = auth()->user();
@@ -133,6 +149,17 @@ class AuthController extends Controller
             ], 404);
         }
 
+        //Validate datetie created_at
+        $created_at = strtotime($passwordReset->created_at);
+        $now = strtotime(date('Y-m-d H:i:s'));
+
+        if($now - $created_at > 3600){ // 1 hour
+            return response()->json([
+                'status' => 'wrong',
+                'message' => 'This password reset token is invalid.'
+            ], 404);
+        }
+
         $user = User::where('email', $passwordReset->email)->first();
 
         if (!$user) {
@@ -169,7 +196,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function validateToken(Request $request){
+    public function validateTokenReset(Request $request){
         $request->validate([
             'token' => 'required|string'
         ]);
@@ -177,6 +204,17 @@ class AuthController extends Controller
         $passwordReset = PasswordReset::where('token', $request->token)->first();
 
         if (!$passwordReset) {
+            return response()->json([
+                'status' => 'wrong',
+                'message' => 'This password reset token is invalid.'
+            ], 404);
+        }
+
+        //Validate datetie created_at
+        $created_at = strtotime($passwordReset->created_at);
+        $now = strtotime(date('Y-m-d H:i:s'));
+
+        if($now - $created_at > 3600){ // 1 hour
             return response()->json([
                 'status' => 'wrong',
                 'message' => 'This password reset token is invalid.'
@@ -200,5 +238,43 @@ class AuthController extends Controller
         ];
 
         return response()->json($response,200);
+    }
+
+    /**
+     * xxxx
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function validateTokenAccess(Request $request){
+        $request->validate([
+            'token' => 'required|string',
+            'id' => 'required|integer'
+        ]);
+
+        $user = \Laravel\Sanctum\PersonalAccessToken::findToken($request->token);
+
+        if($user->tokenable_id != $request->id){
+            return response()->json([
+                'status' => 'wrong',
+                'message' => 'This token is invalid.'
+            ], 404);
+        }
+
+        if (!$user) {
+            return response()->json([
+                'status' => 'wrong',
+                'message' => 'This token is invalid.'
+            ], 404);
+        }
+        else{
+            $response = [
+                'status' => 'success',
+                'message' => 'Token is valid',
+                'token' => $request->token,
+            ];
+
+            return response()->json($response,200);
+        }
+        
     }
 }
