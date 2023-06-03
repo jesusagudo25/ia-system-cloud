@@ -72,7 +72,7 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::get('invoices', 'index');
         Route::get('invoices/paid', 'indexPaid');
         Route::get('invoices/{invoice}', 'show');
-        Route::get('/invoices/{invoice}/download', 'pdf');
+
         Route::post('invoices', 'store');
         Route::put('invoices/{invoice}', 'update');
         Route::put('invoices/new-status/{invoice}', 'newStatus');
@@ -82,7 +82,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::controller(PayrollController::class)->group(function () {
         Route::get('payrolls', 'index');
         Route::get('payrolls/{payroll}', 'show');
-        Route::get('/payrolls/{payroll}/download', 'pdf');
+
         Route::post('/payrolls/review', 'review');
         Route::post('payrolls', 'store');
         Route::put('payrolls/{payroll}', 'update');
@@ -92,7 +92,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::controller(BankCheckController::class)->group(function () {
         Route::get('bank-checks', 'index');
         Route::get('bank-checks/{bankCheck}', 'show');
-        Route::get('/bank-checks/{payroll}/download', 'pdf');
+
         Route::post('bank-checks', 'store');
         Route::put('bank-checks/{bankCheck}', 'update');
         Route::delete('bank-checks/{bankCheck}', 'destroy');
@@ -130,7 +130,7 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::get('reports', 'index');
         Route::get('reports/dashboards', 'indexDashboards');
         Route::get('reports/{report}', 'show');
-        Route::get('/reports/{report}/download', 'pdf');
+
         Route::post('reports', 'store');
         Route::put('reports/{report}', 'update');
         Route::delete('reports/{report}', 'destroy');
@@ -145,5 +145,7 @@ Route::controller(AuthController::class)->group(function(){
     Route::get('/validate-token-access', 'validateTokenAccess');
 });
 
-
-
+Route::get('/invoices/{invoice}/download', [InvoiceController::class, 'pdf']);
+Route::get('/payrolls/{payroll}/download', [PayrollController::class, 'pdf']);
+Route::get('/bank-checks/{payroll}/download', [BankCheckController::class, 'pdf']);
+Route::get('/reports/{report}/download', [ReportController::class, 'pdf']);
