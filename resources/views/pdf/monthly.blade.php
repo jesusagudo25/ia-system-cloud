@@ -147,14 +147,14 @@
                             <td width="22%" valign=top
                                 style='width:22.48%;border-top:none;border-left: solid window;border-bottom:solid windowtext 1.0pt border-right:solid windowtext 1.0pt; padding:0cm 5.4pt 0cm 5.4pt'>
                                 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'>
-                                    <span style='font-size:6.0pt;font-family:"Arial",sans-serif'>{{ $reportList[$month] }}</span>
+                                    <span style='font-size:6.0pt;font-family:"Arial",sans-serif'>{{ number_format($reportList[$month], 2) }}</span>
                                 </p>
                             </td>
                         @endforeach
                         <td width="22%" valign=top
                             style='width:22.48%;border-top:none;border-left: none;border-bottom:solid windowtext 1.0pt border-right:solid windowtext 1.0pt; padding:0cm 5.4pt 0cm 5.4pt'>
                             <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'>
-                                <span style='font-size:6.0pt;font-family:"Arial",sans-serif'>{{ $reportList['total'] }}</span>
+                                <span style='font-size:6.0pt;font-family:"Arial",sans-serif'>{{ number_format($reportList['total'], 2) }}</span>
                             </p>
                         </td>
                     </tr>
@@ -255,14 +255,14 @@
                             <td width="22%" valign=top
                                 style='width:22.48%;border-top:none;border-left: solid window;border-bottom:solid windowtext 1.0pt border-right:solid windowtext 1.0pt; padding:0cm 5.4pt 0cm 5.4pt'>
                                 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'>
-                                    <span style='font-size:6.0pt; font-family:"Arial",sans-serif'>{{ $reportList[$month] }}</span>
+                                    <span style='font-size:6.0pt; font-family:"Arial",sans-serif'>{{ number_format($reportList[$month], 2) }}</span>
                                 </p>
                             </td>
                         @endforeach
                         <td width="22%" valign=top
                             style='width:22.48%;border-top:none;border-left: none;border-bottom:solid windowtext 1.0pt border-right:solid windowtext 1.0pt; padding:0cm 5.4pt 0cm 5.4pt'>
                             <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'>
-                                <span style='font-size:6.0pt; font-family:"Arial",sans-serif'>{{ $reportList['total'] }}</span>
+                                <span style='font-size:6.0pt; font-family:"Arial",sans-serif'>{{ number_format($reportList['total'], 2) }}</span>
                             </p>
                         </td>
                     </tr>

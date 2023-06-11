@@ -35,6 +35,16 @@ class PayrollController extends Controller
         ->selectRaw('sum(invoices.total_amount) as total_amount')
         ->get();
 
+        //Find payrroll with start_date and end_date equal to the request
+        $payroll = Payroll::where('start_date', $request->start_date)->where('end_date', $request->end_date)->first();
+
+        //If payroll exists, return error
+        if ($payroll) {
+            return response()->json([
+                'message' => 'Already exists a payroll with the same start date and end date',
+            ], 400);
+        }
+
         $payroll = Payroll::create([
             'user_id' => $request->user_id,
             'month' => Carbon::parse($request->start_date)->format('F'),
@@ -45,7 +55,7 @@ class PayrollController extends Controller
 
         Invoice::whereIn('id', $request->services)->update(['payroll_id' => $payroll->id]);
 
-        /* Se obtiene los servicios proporcionados por los interpretes de acuerdo a la lista de servicios seleccionados */
+        /* Se obtiene los servicios proporcionados por los interpretes de acuerdo a la lista de servicios (facturas) seleccionados */
         $interpreters = Invoice::whereIn('invoices.id', $request->services)
         ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
         ->join('interpreters', 'invoices.interpreter_id', '=', 'interpreters.id')
@@ -99,16 +109,14 @@ class PayrollController extends Controller
                 'ssn' => $interpreter->ssn,
                 'pay_to' => $interpreter->full_name,
                 'for' => 'Interpreting services provided from '. Carbon::parse($request->start_date)->format('m-d-Y') .' to '. Carbon::parse($request->end_date)->format('m-d-Y'),
-                'routing_number' => 'C1111C',
-                'account_number' => 'A123456789A',
             ]);
 
             foreach ($interpreter->details as $detail) {
                 CheckDetail::create([
                     'bank_check_id' => $bankCheck->id,
-                    'assignment' => $detail->assignment_number,
-                    'closing_date' => $request->end_date,
-                    'date_service' => $detail->date_of_service_provided,
+                    'assignment_number' => $detail->assignment_number,
+                    'date_of_service_provided' => $detail->date_of_service_provided,
+                    'location' => $interpreter->address.', '.$interpreter->city.', '.$interpreter->state.', '.$interpreter->zip_code,
                     'total_amount' => $detail->total_interpreter,
                 ]);
             }
@@ -128,16 +136,14 @@ class PayrollController extends Controller
                 'ssn' => $coordinator->ssn, // '123-45-6789
                 'pay_to' => $coordinator->full_name,
                 'for' => 'Interpreting services provided from '. Carbon::parse($request->start_date)->format('m-d-Y') .' to '. Carbon::parse($request->end_date)->format('m-d-Y'),
-                'routing_number' => 'C1111C',
-                'account_number' => 'A123456789A',
             ]);
 
             foreach ($coordinator->details as $detail) {
                 CheckDetail::create([
                     'bank_check_id' => $bankCheck->id,
-                    'assignment' => $detail->assignment_number,
-                    'closing_date' => $request->end_date,
-                    'date_service' => $detail->date_of_service_provided,
+                    'assignment_number' => $detail->assignment_number,
+                    'date_of_service_provided' => $detail->date_of_service_provided,
+                    'location' => $interpreter->address.', '.$interpreter->city.', '.$interpreter->state.', '.$interpreter->zip_code,
                     'total_amount' => $detail->total_coordinator,
                 ]);
             }
@@ -163,8 +169,7 @@ class PayrollController extends Controller
             pagan servicios atrazados.
         */
 
-        $review = Invoice::whereDate('date_of_service_provided', '<=', Carbon::now()->subDays(30))
-        ->whereIn('invoices.status', ['paid', 'pending'])
+        $review = Invoice::whereIn('invoices.status', ['paid', 'pending'])
         ->where('invoices.payroll_id', null)
         ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
         ->get()

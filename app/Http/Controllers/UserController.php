@@ -68,10 +68,13 @@ class UserController extends Controller
     public function updatePassword(Request $request, User $user)
     {
         //Validate current
-        $currentPassword = User::findOrFail($user->id)->password;
-        if (!\Hash::check($request->currentPassword, $currentPassword)) {
-            return response()->json(['errors' => ['current_password' => ['Current password is incorrect']]], 422);
+        if($request->has('currentPassword')){
+        	$currentPassword = User::findOrFail($user->id)->password;
+        	if (!\Hash::check($request->currentPassword, $currentPassword)) {
+        	    return response()->json(['errors' => ['current_password' => ['Current password is incorrect']]], 422);
+        	}
         }
+
         $request->validate([
             'password' => 'required|string|min:6',
         ]);

@@ -17,9 +17,9 @@ return new class extends Migration
                 ->constrained()
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->string('assignment');
-            $table->date('closing_date');
-            $table->date('date_service');
+            $table->string('assignment_number');
+            $table->date('date_of_service_provided');
+            $table->string('location');
             $table->decimal('total_amount', 8, 2);
             $table->timestamps();
         });

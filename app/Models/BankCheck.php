@@ -17,8 +17,6 @@ class BankCheck extends Model
         'amount',
         'amount_in_words',
         'for',
-        'routing_number',
-        'account_number',
     ];
 
     public function payroll()

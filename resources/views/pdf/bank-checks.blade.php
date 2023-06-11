@@ -108,7 +108,7 @@
     @foreach ($checks as $check)
     <div class=WordSection1>
 
-        <table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width="100%"
+        <table class=MsoNormalTable cellspacing=0 cellpadding=0 width="100%"
             style='width:100.0%;border-collapse:collapse;border:none'>
             <tr style=''>
                 <td width="65%" nowrap colspan=13 rowspan=2 valign=top style='width:65.22%; padding:0cm 5.4pt 0cm 5.4pt;'>
@@ -158,7 +158,7 @@
                 </td>
                 <td width="70%" colspan=14 valign=bottom style='border-top:none; border-left:none; padding:0cm 5.4pt 0cm 5.4pt; border-bottom: 0.1px solid black;'>
                     <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'>
-                        <span lang=EN-US style='font-size:8.0pt;color:black'>{{ $check->pay_to }}</span>
+                        <span lang=EN-US style='color:black'>{{ $check->pay_to }}</span>
                     </p>
                 </td>
                 <td width="30%" nowrap colspan=5 valign=bottom style=' border-top:none;border-left:none;padding:0cm 5.4pt 0cm 5.4pt;'>
@@ -188,7 +188,8 @@
                 </td>
             </tr>
             <tr style='height:46.7pt'>
-                <td  nowrap colspan=21 valign=bottom style=' border-top:none;padding:0cm 5.4pt 0cm 5.4pt; height:38pt'>
+                <td  nowrap colspan=21 valign=bottom style=' border-top:none;padding:8.4pt; height:38pt'>
+                    <img src="https://i.imgur.com/Vx80PT7.jpeg" alt="FABLAB" style="width: 25%;">
                 </td>
                 <td style='border:none;padding:0cm 0cm 0cm 0cm' width="0%">
                     <p class='MsoNormal'>&nbsp; </p>
@@ -225,32 +226,26 @@
                 </td>
             </tr>
             <tr>
-                <td width="17%" nowrap colspan=3 valign=top  style='width:17.18%; border-top:none'>
+                <td width="17%" nowrap colspan=2 valign=top  style='width:17.18%; border-top:none'></td>
                 </td>
-                <td width="8%" valign=top style='width:8.6%;border-top:none;border-left: none;'>
+                <td width="8%" colspan=4  valign=top style='width:8.6%;border-top:none;border-left: none;'>
                     <p class='check-number'  style=''>
-                        <span style='font-size: 14.0pt;'>C1111C</span>
+                        <span style='font-size: 14.0pt;'>C263079276C</span>
                     </p>
                 </td>
-                <td width="2%" nowrap valign=top style='width:2.5%;border-top:none; border-left:none;'>
-                </td>
+
                 <td width="2%" valign=bottom style='width:2.5%;border-top:none;border-left: none;'>
                     &nbsp;
                 </td>
                 <td width="2%" valign=top style='width:2.5%;border-top:none;border-left: none;'>
                     &nbsp;
                 </td>
-                <td width="15%" nowrap colspan=2 valign=top style='width:15.1%;border-top: none;border-left:none;'>
+                <td width="15%" nowrap colspan=3 valign=top style='width:15.1%;border-top: none;border-left:none;'>
                     <p class='check-number'  style=''>
-                        <span style='font-size: 14.0pt;'>A123456789A</span>
+                        <span style='font-size: 14.0pt;'>A7505434465A</span>
                     </p>
                 </td>
-                <td width="2%" valign=top style='width:2.5%;border-top:none;border-left: none;'>
-                    &nbsp;
-                </td>
-                <td width="2%" valign=top style='width:2.5%;border-top:none;border-left: none;'>
-                    &nbsp;
-                </td>
+
                 <td width="20%" colspan=3 valign=top style='width:20.06%;border-top:none; border-left:none; '>
                     <p class='check-number'  style=''>
                         <span style='font-size: 14.0pt;'>{{ $check->id }}</span>
@@ -297,7 +292,6 @@
                 <td
                 width=35%
                 >{{ $check->pay_to }}</td>
-                <td style="text-align: left"> {{ $check->ssn }}</td>
                 <td style="text-align: left">{{ \Carbon\Carbon::parse($check->check_date)->format('M d, Y') }}</td>
                 <td style="text-align: right">Check No. {{ $check->id }}</td>
             </tr>
@@ -306,22 +300,22 @@
         <table class=MsoNormalTable cellspacing=0 cellpadding=0 width='100%'
             style='width:100.0%;border-collapse:collapse;border:none'>
             <tr style="font-size: 9.0pt;">
-                <th style="text-align: left;" width=20%>Document No.</th>
-                <th style="text-align: left;" width=15%>Date</th>
-                <th style="text-align: left;" width=15%>Posting Description</th>
+                <th style="text-align: left;" width=20%>Assignment No.</th>
+                <th style="text-align: left;" width=30%>Dat of service provided</th>
+                <th style="text-align: left;" width=40%>Location</th>
                 <th style="text-align: right;">Net Amount</th>
             </tr>
             @foreach ($check->checkDetails as $checkDetail)
             <tr style="font-size: 8.0pt">
-                <td  width=20%>{{ $checkDetail->assignment }}</td>
-                <td width=15%>{{ Carbon\Carbon::parse($checkDetail->closing_date)->format('m-d-Y') }}</td>
-                <td width=15%>{{ Carbon\Carbon::parse($checkDetail->date_service)->format('m-d-Y') }}</td>
+                <td >{{ $checkDetail->assignment_number }}</td>
+                <td>{{ Carbon\Carbon::parse($checkDetail->date_of_service_provided)->format('m-d-Y') }}</td>
+                <td>{{ $checkDetail->location }}</td>
                 <td style="text-align: right;" >{{ $checkDetail->total_amount }}</td>
             </tr>
             @endforeach
             <tr style="font-size: 9.0pt;">
                 <td colspan=3 style="text-align: right; padding-top: 15px; padding-right:10px;"></td>
-                <td style="text-align: right; padding-top: 15px; padding-right:10px;">
+                <td style="text-align: right; padding-top: 15px; padding-right:10px; width: 50%;">
                     <b>Total</b>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

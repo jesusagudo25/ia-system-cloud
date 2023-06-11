@@ -23,8 +23,6 @@ return new class extends Migration
             $table->decimal('amount', 8, 2);
             $table->string('amount_in_words');
             $table->string('for');
-            $table->string('routing_number');
-            $table->string('account_number');
             $table->timestamps();
         });
     }

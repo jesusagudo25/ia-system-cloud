@@ -600,7 +600,7 @@
                 <td width=312 valign=top style='width:233.95pt;padding:0cm 0cm 0cm 0cm;
           height:93.55pt; border-top:1px'>
                     <p class=Alinearaladerecha><strong><span lang=EN>INTERPRETER/VENDOR ID # </span></strong><span
-                            lang=EN> </span><span lang=EN>{{ $invoice->interpreter_id }}</span></p>
+                            lang=EN> </span><span lang=EN>700830</span></p>
                 </td>
             </tr>
         </table>
@@ -657,11 +657,11 @@
           padding:0cm 0cm 0cm 0cm'>
                     <h5 style='margin-bottom:0cm;line-height:normal'>
                         <em><span lang=EN>Arrival time:</span></em>
-                        <span>{{ \Carbon\Carbon::parse($details->arrival_time)->format('h:i A') }}</span>
+                        <span>{{ $details->arrival_time ? \Carbon\Carbon::parse($details->arrival_time)->format('h:i A') : 'N/A' }}</span>
                         <em><span lang=EN>Start time:</span></em>
-                        <span>{{ \Carbon\Carbon::parse($details->start_time)->format('h:i A') }}</span>
+                        <span>{{ $details->start_time ? \Carbon\Carbon::parse($details->start_time)->format('h:i A') : 'N/A' }}</span>
                         <em><span lang=EN>End time:</span></em>
-                        <span>{{ \Carbon\Carbon::parse($details->end_time)->format('h:i A') }}</span>
+                        <span>{{ $details->end_time ? \Carbon\Carbon::parse($details->end_time)->format('h:i A') : 'N/A' }}</span>
                     </h5>
                 </td>
                 <td width=179 valign=top

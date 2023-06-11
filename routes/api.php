@@ -72,7 +72,7 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::get('invoices', 'index');
         Route::get('invoices/paid', 'indexPaid');
         Route::get('invoices/{invoice}', 'show');
-
+        Route::get('/invoices/assignmentNumber/{assignmentNumber}/', 'validateAssignmentNumber');
         Route::post('invoices', 'store');
         Route::put('invoices/{invoice}', 'update');
         Route::put('invoices/new-status/{invoice}', 'newStatus');

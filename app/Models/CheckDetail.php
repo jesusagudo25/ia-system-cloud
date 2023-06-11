@@ -11,9 +11,9 @@ class CheckDetail extends Model
 
     protected $fillable = [
         'bank_check_id',
-        'assignment',
-        'closing_date',
-        'date_service',
+        'assignment_number',
+        'date_of_service_provided',
+        'location',
         'total_amount',
     ];
 

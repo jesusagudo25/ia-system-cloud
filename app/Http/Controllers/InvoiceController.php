@@ -26,6 +26,26 @@ class InvoiceController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     */
+    public function validateAssignmentNumber($assignmentNumber)
+    {
+        $invoice = InvoiceDetail::where('assignment_number', $assignmentNumber)->first();
+        if($invoice != null){
+            return response()->json([
+                'message' => 'The assignment number already exists',
+                'status' => 'error',
+            ], 400);
+        }
+        else{
+            return response()->json([
+                'message' => 'The assignment number is available',
+                'status' => 'success',
+            ], 200);
+        }
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -35,6 +55,8 @@ class InvoiceController extends Controller
         $interpreter_id = $request->has('interpreter_id') ? $request->interpreter_id : null;
         $address_id = $request->has('address_id') ? $request->address_id : null;
         $description_id = $request->has('description_id') ? $request->description_id : null;
+
+        //FindOrFails interprete
 
         if (empty($interpreter_id)) {
             $interpreter = Interpreter::create([
@@ -50,6 +72,9 @@ class InvoiceController extends Controller
             ]);
 
             $interpreter_id = $interpreter->id;
+        }
+        else{
+            $interpreter = Interpreter::where('id', $interpreter_id)->first();
         }
 
         if (empty($address_id)) {
@@ -100,8 +125,8 @@ class InvoiceController extends Controller
 
         InvoiceDetail::create([
             'invoice_id' => $invoice->id,
-            'invoice_number' => sprintf('%06d', $invoice->id).'-JA',
-            'assignment_number' => sprintf('%06d', $invoice->id),
+            'invoice_number' => $request->assignment_number.'-'.substr($interpreter->full_name, 0, 1).substr($interpreter->full_name, strpos($interpreter->full_name, ' ')+1, 1),
+            'assignment_number' => $request->assignment_number,
             'description_id' => $description_id,
             'date_of_service_provided' => $request->date_of_service_provided,
             'arrival_time' => $request->arrival_time,
@@ -165,6 +190,14 @@ class InvoiceController extends Controller
 
     public function newStatus(Request $request, Invoice $invoice)
     {
+        //Find invoice and validate if id_payroll is not null
+        if ($invoice->payroll_id != null && $request->status == 'cancelled') {
+            return response()->json([
+                'message' => 'Service already has a payroll',
+                'status' => 'error',
+            ], 400);
+        }
+
         Invoice::where('id', $invoice->id)->update(['status' => $request->status]);
     }
 
