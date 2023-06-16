@@ -113,12 +113,12 @@ class DatabaseSeeder extends Seeder
             'zip_code' => '33126-1049',
         ]);
 
-        DB::table('addresses')->insert([
+/*         DB::table('addresses')->insert([
             'address' => '1970 NW 82ND AVE',
             'city' => 'DORAL',
             'state' => 'Florida',
             'state_abbr' => 'FL',
             'zip_code' => '33126-1049',
-        ]);
+        ]); */
     }
 }

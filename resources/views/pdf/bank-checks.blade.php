@@ -189,7 +189,7 @@
             </tr>
             <tr style='height:46.7pt'>
                 <td  nowrap colspan=21 valign=bottom style=' border-top:none;padding:8.4pt; height:38pt'>
-                    <img src="https://i.imgur.com/Vx80PT7.jpeg" alt="FABLAB" style="width: 25%;">
+                    <img src={{ asset('images/vystar.jpg') }} alt="FABLAB" style="width: 25%;">
                 </td>
                 <td style='border:none;padding:0cm 0cm 0cm 0cm' width="0%">
                     <p class='MsoNormal'>&nbsp; </p>
