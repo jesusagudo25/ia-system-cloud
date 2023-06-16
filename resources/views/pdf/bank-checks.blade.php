@@ -301,7 +301,7 @@
             style='width:100.0%;border-collapse:collapse;border:none'>
             <tr style="font-size: 9.0pt;">
                 <th style="text-align: left;" width=20%>Assignment No.</th>
-                <th style="text-align: left;" width=30%>Dat of service provided</th>
+                <th style="text-align: left;" width=30%>Date of service provided</th>
                 <th style="text-align: left;" width=40%>Location</th>
                 <th style="text-align: right;">Net Amount</th>
             </tr>

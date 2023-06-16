@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Address;
 use App\Models\BankCheck;
 use App\Models\CheckDetail;
 use App\Models\Interpreter;
@@ -112,11 +113,13 @@ class PayrollController extends Controller
             ]);
 
             foreach ($interpreter->details as $detail) {
+                //Find address of the service detail
+                $address = Address::where('id', $detail->address_id)->first();
                 CheckDetail::create([
                     'bank_check_id' => $bankCheck->id,
                     'assignment_number' => $detail->assignment_number,
                     'date_of_service_provided' => $detail->date_of_service_provided,
-                    'location' => $interpreter->address.', '.$interpreter->city.', '.$interpreter->state.', '.$interpreter->zip_code,
+                    'location' => $address->address.', '.$address->city.', '.$address->state.', '.$address->zip_code,
                     'total_amount' => $detail->total_interpreter,
                 ]);
             }
@@ -139,11 +142,12 @@ class PayrollController extends Controller
             ]);
 
             foreach ($coordinator->details as $detail) {
+                $address = Address::where('id', $detail->address_id)->first();
                 CheckDetail::create([
                     'bank_check_id' => $bankCheck->id,
                     'assignment_number' => $detail->assignment_number,
                     'date_of_service_provided' => $detail->date_of_service_provided,
-                    'location' => $interpreter->address.', '.$interpreter->city.', '.$interpreter->state.', '.$interpreter->zip_code,
+                    'location' => $address->address.', '.$address->city.', '.$address->state.', '.$address->zip_code,
                     'total_amount' => $detail->total_coordinator,
                 ]);
             }
@@ -202,18 +206,21 @@ class PayrollController extends Controller
             $interpreters = Invoice::where('invoices.payroll_id', $payroll->id)
             ->whereIn('invoices.status', ['paid', 'pending'])
                 ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
-                ->join('descriptions', 'invoice_details.description_id', '=', 'descriptions.id')
+                ->join('addresses', 'invoice_details.address_id', '=', 'addresses.id')
                 ->join('interpreters', 'invoices.interpreter_id', '=', 'interpreters.id')
-                ->select('interpreters.*', 'descriptions.*', 'invoice_details.*', 'invoices.*')
+                ->select('interpreters.*', 'addresses.address as locationAddress', 'addresses.city as locationCity', 'addresses.state as locationState', 'addresses.zip_code as locationZipCode', 'invoice_details.*', 'invoices.*')
                 ->get()
                 ->groupBy('interpreter_id');
 
             $coordinator = Invoice::where('invoices.payroll_id', $payroll->id)
             ->whereIn('invoices.status', ['paid', 'pending'])
                 ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
-                ->join('descriptions', 'invoice_details.description_id', '=', 'descriptions.id')
+                ->join('addresses', 'invoice_details.address_id', '=', 'addresses.id')
                 ->join('coordinators', 'invoices.coordinator_id', '=', 'coordinators.id')
+                ->select('coordinators.*', 'addresses.address as locationAddress', 'addresses.city as locationCity', 'addresses.state as locationState', 'addresses.zip_code as locationZipCode', 'invoice_details.*', 'invoices.*')
                 ->get();
+
+
 
             $pdf = \PDF::loadView('pdf.fortnightly', [
                 'payroll' => $payroll,

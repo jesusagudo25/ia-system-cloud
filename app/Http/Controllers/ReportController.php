@@ -48,7 +48,6 @@ class ReportController extends Controller
             'total_income' => $totalIncome,
             'total_expenses' => $totalExpenses,
         ];
-        
     }
 
     /**
@@ -178,16 +177,16 @@ class ReportController extends Controller
                     $end_date = $range['end_date'];
                     $details = $interpreter->invoices
                         ->load('invoiceDetails')
-                        ->whereBetween('updated_at', [$start_date, $end_date])
                         ->where('payroll_id', '!=', null)
                         ->pluck('invoiceDetails')
                         ->flatten();
+                    $details = $details->whereBetween('date_of_service_provided', [$start_date, $end_date]);
 
                     $salary = $details->sum('total_interpreter');
                     $total += $salary;
-                    $row[$month] = $salary ? $salary : '0.00';
+                    $row[$month] = $salary ? number_format($salary, 2) : '0.00';
                 }
-                $row['total'] = $total ? $total : '0.00';
+                $row['total'] = $total ? number_format($total, 2) : '0.00';
                 $reportsInterpreters[] = $row;
             }
 
@@ -212,15 +211,17 @@ class ReportController extends Controller
                     $end_date = $range['end_date'];
                     $details = $coordinator->invoices
                         ->load('invoiceDetails')
-                        ->whereBetween('updated_at', [$start_date, $end_date])
                         ->where('payroll_id', '!=', null)
                         ->pluck('invoiceDetails')
                         ->flatten();
+
+                    $details = $details->whereBetween('date_of_service_provided', [$start_date, $end_date]);
+
                     $salary = $details->sum('total_coordinator');
                     $total += $salary;
-                    $row[$month] = $salary ? $salary : '0.00';
+                    $row[$month] = $salary ? number_format($salary, 2) : '0.00';
                 }
-                $row['total'] = $total ? $total : '0.00';
+                $row['total'] = $total ? number_format($total, 2) : '0.00';
                 $reportsCoordinators[] = $row;
             }
 

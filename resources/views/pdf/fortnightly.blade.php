@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Fortnightly Payroll: {{ Carbon\Carbon::parse($payroll->start_date)->format('m-d-Y') }} to {{ Carbon\Carbon::parse($payroll->end_date)->format('m-d-Y') }}</title>
+    <title>Payroll: {{ Carbon\Carbon::parse($payroll->start_date)->format('m-d-Y') }} to {{ Carbon\Carbon::parse($payroll->end_date)->format('m-d-Y') }}</title>
     <style>
         /* Font Definitions */
         @font-face {
@@ -63,7 +63,7 @@
         <div class=WordSection1>
             <p class=MsoNormal align=center style='text-align:center'><b>
                 <span style='font-size:12.0pt;line-height:107%;font-family:"Arial",sans-serif'>
-                    Fortnightly Payroll: {{ Carbon\Carbon::parse($payroll->start_date)->format('m-d-Y') }} to {{ Carbon\Carbon::parse($payroll->end_date)->format('m-d-Y') }}
+                    Payroll: {{ Carbon\Carbon::parse($payroll->start_date)->format('m-d-Y') }} to {{ Carbon\Carbon::parse($payroll->end_date)->format('m-d-Y') }}
                 </span></b>
             </p>
             <hr>
@@ -125,7 +125,7 @@
                         style='width:48.16%;border-top:none;border-left:none; border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt; padding:0cm 5.4pt 0cm 5.4pt;height:20.05pt'>
                         <p class=MsoNormal align=center
                             style='margin-bottom:0cm;text-align:center; line-height:normal'><b><i><span
-                                        style='font-size:9.0pt;font-family:"Arial",sans-serif'>Description</span></i></b>
+                                        style='font-size:9.0pt;font-family:"Arial",sans-serif'>Location</span></i></b>
                         </p>
                     </td>
                     <td width="14%"
@@ -148,13 +148,12 @@
                     </td>
                     <td width="22%" style='width:22.48%;border-top:none;border-left:none; border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt; padding:0cm 5.4pt 0cm 5.4pt'>
                         <p class=MsoNormal align=right style='margin-bottom:0cm;text-align:right; line-height:normal'><span
-                                style='font-size:9.0pt;font-family:"Arial",sans-serif'>{{ $assignment['invoice_id'] }}</span>
+                                style='font-size:9.0pt;font-family:"Arial",sans-serif'>{{ $assignment['assignment_number'] }}</span>
                         </p>
                     </td>
                     <td width="48%" style='width:48.16%;border-top:none;border-left:none; border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt; padding:0cm 5.4pt 0cm 5.4pt'>
                         <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
-                                style='font-size:9.0pt;font-family:"Arial",sans-serif'>{{ $assignment['title'] }}</span>
-                        </p>
+                            style='font-size:9.0pt;font-family:"Arial",sans-serif'>{{ $assignment['locationAddress'].', '.$assignment['locationCity'].', '.$assignment['locationState'].', '.$assignment['locationZipCode'] }}</span>
                     </td>
                     <td width="14%" style='width:14.96%;border-top:none;border-left:none; border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt; padding:0cm 5.4pt 0cm 5.4pt'>
                         <p class=MsoNormal align=right
@@ -194,7 +193,7 @@
                                 style='font-family:"Arial",sans-serif'>&nbsp;</span></p>
                     </td>
                     <td width="47%" valign=top style='width:47.96%;border-top:none;border-left: none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt; background:#E2EFD9;padding:0cm 5.4pt 0cm 5.4pt'>
-                        <p class=MsoNormal align=right style='margin-bottom:0cm;text-align:right; line-height:normal'><b><i><span style='font-family:"Arial",sans-serif; color:black'>FORTNIGHTLY TOTAL</span></i></b></p>
+                        <p class=MsoNormal align=right style='margin-bottom:0cm;text-align:right; line-height:normal'><b><i><span style='font-family:"Arial",sans-serif; color:black'>TOTAL</span></i></b></p>
                     </td>
                     <td width="16%" style='width:16.56%;border-top:none;border-left:none; border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt; background:#E2EFD9;padding:0cm 5.4pt 0cm 5.4pt'>
                         <p class=MsoNormal align=right style='margin-bottom:0cm;text-align:right; line-height:normal'><b><i><span style='font-family:"Arial",sans-serif; color:black'>{{ number_format($totalInterpreter, 2) }}</span></i></b>
@@ -212,7 +211,7 @@
         <div class=WordSection1>
             <p class=MsoNormal align=center style='text-align:center'><b>
                 <span style='font-size:12.0pt;line-height:107%;font-family:"Arial",sans-serif'>
-                    Fortnightly Payroll: {{ Carbon\Carbon::parse($payroll->start_date)->format('m-d-Y') }} to {{ Carbon\Carbon::parse($payroll->end_date)->format('m-d-Y') }}
+                    Payroll: {{ Carbon\Carbon::parse($payroll->start_date)->format('m-d-Y') }} to {{ Carbon\Carbon::parse($payroll->end_date)->format('m-d-Y') }}
                 </span></b>
             </p>
             <hr>
@@ -279,7 +278,7 @@
                         style='width:48.16%;border-top:none;border-left:none; border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt; padding:0cm 5.4pt 0cm 5.4pt;height:20.05pt'>
                         <p class=MsoNormal align=center
                             style='margin-bottom:0cm;text-align:center; line-height:normal'><b><i><span
-                                        style='font-size:9.0pt;font-family:"Arial",sans-serif'>Description</span></i></b>
+                                        style='font-size:9.0pt;font-family:"Arial",sans-serif'>Location</span></i></b>
                         </p>
                     </td>
                     <td width="14%"
@@ -292,29 +291,29 @@
                 </tr>
 
                 @php ($totalCoordinator = 0)
-                @foreach ($coordinator as $service)
+                @foreach ($coordinator as $assignment)
                 <tr>
                     <td width="14%"
                         style='width:14.4%;border:solid windowtext 1.0pt;border-top: none;padding:0cm 5.4pt 0cm 5.4pt'>
                         <p class=MsoNormal align=right style='margin-bottom:0cm;text-align:right; line-height:normal'>
-                            <span style='font-size:9.0pt;font-family:"Arial",sans-serif'>{{ Carbon\Carbon::parse($service['date_of_service_provided'])->format('m-d-Y') }}</span>
+                            <span style='font-size:9.0pt;font-family:"Arial",sans-serif'>{{ Carbon\Carbon::parse($assignment['date_of_service_provided'])->format('m-d-Y') }}</span>
                         </p>
                     </td>
                     <td width="22%" style='width:22.48%;border-top:none;border-left:none; border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt; padding:0cm 5.4pt 0cm 5.4pt'>
                         <p class=MsoNormal align=right style='margin-bottom:0cm;text-align:right; line-height:normal'><span
-                                style='font-size:9.0pt;font-family:"Arial",sans-serif'>{{ $service['invoice_id'] }}</span>
+                                style='font-size:9.0pt;font-family:"Arial",sans-serif'>{{ $assignment['assignment_number'] }}</span>
                         </p>
                     </td>
                     <td width="48%" style='width:48.16%;border-top:none;border-left:none; border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt; padding:0cm 5.4pt 0cm 5.4pt'>
                         <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
-                                style='font-size:9.0pt;font-family:"Arial",sans-serif'>{{ $service['title'] }}</span>
+                                style='font-size:9.0pt;font-family:"Arial",sans-serif'>{{ $assignment['locationAddress'].', '.$assignment['locationCity'].', '.$assignment['locationState'].', '.$assignment['locationZipCode'] }}</span>
                         </p>
                     </td>
                     <td width="14%" style='width:14.96%;border-top:none;border-left:none; border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt; padding:0cm 5.4pt 0cm 5.4pt'>
                         <p class=MsoNormal align=right
                             style='margin-bottom:0cm;text-align:right; line-height:normal'>
-                            <span style='font-size:9.0pt;font-family:"Arial",sans-serif'>{{ $service['total_coordinator'] }}</span>
-                            @php ($totalCoordinator += $service['total_coordinator'])
+                            <span style='font-size:9.0pt;font-family:"Arial",sans-serif'>{{ $assignment['total_coordinator'] }}</span>
+                            @php ($totalCoordinator += $assignment['total_coordinator'])
                         </p>
                     </td>
                 </tr>
@@ -347,7 +346,7 @@
                     </td>
                     <td width="48%" valign=top style='width:48.16%;border-top:none;border-left: none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt; background:#E2EFD9;padding:0cm 5.4pt 0cm 5.4pt'>
                         <p class=MsoNormal align=right style='margin-bottom:0cm;text-align:right; line-height:normal'><b><i>
-                            <span style='font-family:"Arial",sans-serif; color:black'>FORTNIGHTLY TOTAL</span></i></b>
+                            <span style='font-family:"Arial",sans-serif; color:black'>TOTAL</span></i></b>
                         </p>
                     </td>
                     <td width="14%" style='width:14.96%;border-top:none;border-left:none; border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt; background:#E2EFD9;padding:0cm 5.4pt 0cm 5.4pt'>
