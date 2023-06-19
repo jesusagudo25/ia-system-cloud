@@ -109,15 +109,17 @@
     <div class=WordSection1>
 
         <table class=MsoNormalTable cellspacing=0 cellpadding=0 width="100%"
-            style='width:100.0%;border-collapse:collapse;border:none'>
+            style='width:100.0%;border-collapse:collapse;border:none'
             <tr style=''>
-                <td width="65%" nowrap colspan=13 rowspan=2 valign=top style='width:65.22%; padding:0cm 5.4pt 0cm 5.4pt;'>
+                <td width="65%" nowrap colspan=8 rowspan=2 valign=top style='width:65.22%; padding:0cm 5.4pt 0cm 5.4pt;'>
                     <p class=MsoBold style='margin-bottom:0;' ><span lang=EN-US style='color:black; font-size: 14.5px'>INTERPRETERS ACADEMY</span></p>
                     <p class=MsoBold style='margin-bottom:0;'><span lang=EN-US style='color:black; font-size: 14.5px;'>OF JACKSONVILLE LLC</span></p>
                     <p class=MsoNormal style='margin-bottom:0;'><span lang=EN-US style='font-size:10.0pt;color:black; font-size: 13.5px;'>2280 SHEPARD ST APT 404</span></p>
                     <p class=MsoNormal style='margin-bottom:0;'><span lang=EN-US style='font-size:10.0pt;color:black; font-size: 13.5px;'>JACKSONVILLE, FL 32211-3284</span></p>
                 </td>
-                    <p class=MsoNormal style='margin-bottom:0;line-height:normal'><b><span lang=EN-US style='color:black'>&nbsp;</span></b></p>
+                <td  nowrap colspan=5 rowspan=2  valign=top align=right
+                    <img src={{ asset('images/vystar.jpg') }} alt="FABLAB" style="width: 60%;">
+                </td>
                 </td>
                 <td width="16%" nowrap colspan=3 valign=bottom style='width:16.82%; border-left:none;padding:0cm 5.4pt 0cm 5.4pt; '>
                     <p class='MsoNormal'>&nbsp; </p>
@@ -187,9 +189,8 @@
                     <p class='MsoNormal'>&nbsp; </p>
                 </td>
             </tr>
-            <tr style='height:46.7pt'>
-                <td  nowrap colspan=21 valign=bottom style=' border-top:none;padding:8.4pt; height:38pt'>
-                    <img src={{ asset('images/vystar.jpg') }} alt="FABLAB" style="width: 25%;">
+            <tr >
+                <td  nowrap colspan=21 valign=bottom style=' border-top:none;padding:0cm 5.4pt 0cm 5.4pt; height:25pt'>
                 </td>
                 <td style='border:none;padding:0cm 0cm 0cm 0cm' width="0%">
                     <p class='MsoNormal'>&nbsp; </p>
