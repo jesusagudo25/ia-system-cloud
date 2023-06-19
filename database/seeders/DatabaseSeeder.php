@@ -22,6 +22,14 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
+        DB::table('users')->insert([
+            'full_name' => 'Mikey Williams',
+            'email' => 'superadmin@superadmin.com',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'remember_token' => Str::random(10),
+        ]);
+
         DB::table('lenguages')->insert([
             'id' => 1,
             'name' => 'American Sign Language',
