@@ -814,7 +814,7 @@
                     style='width:389.9pt;border:none;border-bottom:solid #BDD6EE 1.0pt;
           padding:0cm 0cm 0cm 0cm'>
                     <h5 style='margin-bottom:0cm;line-height:normal'><em><span lang=EN>
-                            Interpreting Service Rates:</span></em> ${{ $lenguage->price_per_hour }} per hour for two (2) hours minium</h5>
+                            Interpreting Service Rates:</span></em> ${{ $lenguage->price_per_hour }} per hour for two (2) hours Minimum</h5>
                 </td>
                 <td width=179 valign=top
                     style='width:134.6pt;border:none;border-bottom:solid #BDD6EE 1.0pt;
