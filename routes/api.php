@@ -76,6 +76,7 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::post('invoices', 'store');
         Route::put('invoices/{invoice}', 'update');
         Route::put('invoices/new-status/{invoice}', 'newStatus');
+        Route::get('invoices/payroll/{invoice}', 'validatePayroll');
         Route::delete('invoices/{invoice}', 'destroy');
     });
     

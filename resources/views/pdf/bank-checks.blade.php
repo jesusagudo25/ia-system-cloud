@@ -207,7 +207,7 @@
                 <td width="30%" nowrap colspan=4 valign=bottom
                     style='width:30.66%; border-top:none;border-left:none;padding:0cm 5.4pt 0cm 5.4pt;height:15.4pt;'>
                 </td>
-                <td width="34%" nowrap colspan=9 valign=bottom style='width:34.58%; border-top:none;border-left:none;padding:0cm 5.4pt 0cm 5.4pt;height:15.4pt; border-bottom: 0.1px solid black;'>
+                <td width="34%" nowrap colspan=9 rowspan="2" valign=middle style='width:34.58%; border-top:none;border-left:none;padding:0cm 5.4pt 0cm 5.4pt;height:15.4pt; border-bottom: 0.1px solid black;'>
                     <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'>
                         <span style='color:black'>&nbsp;</span>
                     </p>
