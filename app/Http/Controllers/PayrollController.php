@@ -176,8 +176,38 @@ class PayrollController extends Controller
         $review = Invoice::whereIn('invoices.status', ['paid', 'pending'])
         ->where('invoices.payroll_id', null)
         ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
+        ->select(
+            'invoices.id',
+            'invoices.agency_id',
+            'invoices.interpreter_id',
+            'invoices.coordinator_id',
+            'invoices.status',
+            'invoices.total_amount',
+            'invoices.created_at',
+            'invoices.updated_at',
+            
+            'invoice_details.id as detail_id',
+            'invoice_details.invoice_id',
+            'invoice_details.address_id',
+            'invoice_details.description_id',
+            'invoice_details.invoice_number',
+            'invoice_details.assignment_number',
+            'invoice_details.date_of_service_provided',
+            'invoice_details.arrival_time',
+            'invoice_details.start_time',
+            'invoice_details.end_time',
+            'invoice_details.travel_time_to_assignment',
+            'invoice_details.time_back_from_assignment',
+            'invoice_details.travel_mileage',
+            'invoice_details.cost_per_mile',
+            'invoice_details.total_amount_miles',
+            'invoice_details.total_amount_hours',
+            'invoice_details.total_interpreter',
+            'invoice_details.total_coordinator',
+            'invoice_details.comments',
+        )
         ->get()
-        ->load('agency', 'interpreter', 'coordinator', 'invoiceDetails');
+        ->load('agency', 'interpreter', 'coordinator');
 
         return response()->json([
             'message' => 'Review created successfully',
