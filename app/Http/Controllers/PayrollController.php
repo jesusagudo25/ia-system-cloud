@@ -23,6 +23,80 @@ class PayrollController extends Controller
         return Payroll::all()->load('user');
     }
 
+    public function getAbbrState($state)
+    {
+        $statesUSA = array(
+            'Alabama' => 'AL',
+            'Alaska' => 'AK',
+            'American Samoa' => 'AS',
+            'Arizona' => 'AZ',
+            'Arkansas' => 'AR',
+            'Baker Island' => 'UM-81',
+            'California' => 'CA',
+            'Colorado' => 'CO',
+            'Connecticut' => 'CT',
+            'Delaware' => 'DE',
+            'District of Columbia' => 'DC',
+            'Florida' => 'FL',
+            'Georgia' => 'GA',
+            'Guam' => 'GU',
+            'Hawaii' => 'HI',
+            'Howland Island' => 'UM-84',
+            'Idaho' => 'ID',
+            'Illinois' => 'IL',
+            'Indiana' => 'IN',
+            'Iowa' => 'IA',
+            'Jarvis Island' => 'UM-86',
+            'Johnston Atoll' => 'UM-67',
+            'Kansas' => 'KS',
+            'Kentucky' => 'KY',
+            'Kingman Reef' => 'UM-89',
+            'Louisiana' => 'LA',
+            'Maine' => 'ME',
+            'Maryland' => 'MD',
+            'Massachusetts' => 'MA',
+            'Michigan' => 'MI',
+            'Midway Atoll' => 'UM-71',
+            'Minnesota' => 'MN',
+            'Mississippi' => 'MS',
+            'Missouri' => 'MO',
+            'Montana' => 'MT',
+            'Navassa Island' => 'UM-76',
+            'Nebraska' => 'NE',
+            'Nevada' => 'NV',
+            'New Hampshire' => 'NH',
+            'New Jersey' => 'NJ',
+            'New Mexico' => 'NM',
+            'New York' => 'NY',
+            'North Carolina' => 'NC',
+            'North Dakota' => 'ND',
+            'Northern Mariana Islands' => 'MP',
+            'Ohio' => 'OH',
+            'Oklahoma' => 'OK',
+            'Oregon' => 'OR',
+            'Palmyra Atoll' => 'UM-95',
+            'Pennsylvania' => 'PA',
+            'Puerto Rico' => 'PR',
+            'Rhode Island' => 'RI',
+            'South Carolina' => 'SC',
+            'South Dakota' => 'SD',
+            'Tennessee' => 'TN',
+            'Texas' => 'TX',
+            'United States Minor Outlying Islands' => 'UM',
+            'United States Virgin Islands' => 'VI',
+            'Utah' => 'UT',
+            'Vermont' => 'VT',
+            'Virginia' => 'VA',
+            'Wake Island' => 'UM-79',
+            'Washington' => 'WA',
+            'West Virginia' => 'WV',
+            'Wisconsin' => 'WI',
+            'Wyoming' => 'WY'
+        );
+
+        return $statesUSA[$state];
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -32,19 +106,9 @@ class PayrollController extends Controller
 
         /* Se obtiene el total de la planilla para asignarlo al payroll */
         $total = Invoice::whereIn('invoices.id', $request->services)
-        ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
-        ->selectRaw('sum(invoices.total_amount) as total_amount')
-        ->get();
-
-        //Find payrroll with start_date and end_date equal to the request
-        $payroll = Payroll::where('start_date', $request->start_date)->where('end_date', $request->end_date)->first();
-
-        //If payroll exists, return error
-        if ($payroll) {
-            return response()->json([
-                'message' => 'Already exists a payroll with the same start date and end date',
-            ], 400);
-        }
+            ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
+            ->selectRaw('sum(invoices.total_amount) as total_amount')
+            ->get();
 
         $payroll = Payroll::create([
             'user_id' => $request->user_id,
@@ -58,37 +122,37 @@ class PayrollController extends Controller
 
         /* Se obtiene los servicios proporcionados por los interpretes de acuerdo a la lista de servicios (facturas) seleccionados */
         $interpreters = Invoice::whereIn('invoices.id', $request->services)
-        ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
-        ->join('interpreters', 'invoices.interpreter_id', '=', 'interpreters.id')
-        ->selectRaw('sum(invoice_details.total_interpreter) as total_amount, interpreters.*')
-        ->groupBy('interpreters.id')
-        ->get();
+            ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
+            ->join('interpreters', 'invoices.interpreter_id', '=', 'interpreters.id')
+            ->selectRaw('sum(invoice_details.total_interpreter) as total_amount, interpreters.*')
+            ->groupBy('interpreters.id')
+            ->get();
 
         $interpreterDetails = Invoice::whereIn('invoices.id', $request->services)
-        ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
-        ->join('interpreters', 'invoices.interpreter_id', '=', 'interpreters.id')
-        ->selectRaw('sum(invoice_details.total_interpreter) as total_amount, interpreters.id AS interpreter_id, invoice_details.*')
-        ->groupBy('interpreters.id', 'invoice_details.id')
-        ->get();
-        
+            ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
+            ->join('interpreters', 'invoices.interpreter_id', '=', 'interpreters.id')
+            ->selectRaw('sum(invoice_details.total_interpreter) as total_amount, interpreters.id AS interpreter_id, invoice_details.*')
+            ->groupBy('interpreters.id', 'invoice_details.id')
+            ->get();
+
         $interpreters = collect($interpreters)->each(function ($item, $key) use ($interpreterDetails) {
             $item->details = $interpreterDetails->where('interpreter_id', $item->id);
         });
 
         /* Se obtiene los servicios proporcionados por los coordinadores de acuerdo a la lista de servicios seleccionados */
         $coordinator = Invoice::whereIn('invoices.id', $request->services)
-        ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
-        ->join('coordinators', 'invoices.coordinator_id', '=', 'coordinators.id')
-        ->selectRaw('sum(invoice_details.total_coordinator) as total_amount, coordinators.*')
-        ->groupBy('coordinators.id')
-        ->get();
+            ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
+            ->join('coordinators', 'invoices.coordinator_id', '=', 'coordinators.id')
+            ->selectRaw('sum(invoice_details.total_coordinator) as total_amount, coordinators.*')
+            ->groupBy('coordinators.id')
+            ->get();
 
         $coordinatorDetails = Invoice::whereIn('invoices.id', $request->services)
-        ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id') 
-        ->join('coordinators', 'invoices.coordinator_id', '=', 'coordinators.id')
-        ->selectRaw('sum(invoice_details.total_coordinator) as total_amount, coordinators.id AS coordinator_id, invoice_details.*')
-        ->groupBy('coordinators.id', 'invoice_details.id')
-        ->get();
+            ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
+            ->join('coordinators', 'invoices.coordinator_id', '=', 'coordinators.id')
+            ->selectRaw('sum(invoice_details.total_coordinator) as total_amount, coordinators.id AS coordinator_id, invoice_details.*')
+            ->groupBy('coordinators.id', 'invoice_details.id')
+            ->get();
 
         $coordinator = collect($coordinator)->each(function ($item, $key) use ($coordinatorDetails) {
             $item->details = $coordinatorDetails->where('coordinator_id', $item->id);
@@ -101,7 +165,7 @@ class PayrollController extends Controller
             $decimal = $totalAmount[1] . '/' . 100;
             $amountInWords = ucwords((new NumberFormatter('en_IN', NumberFormatter::SPELLOUT))->format($totalAmount[0]));
             $amountInWords = $amountInWords . ' ' . 'and' . ' ' . $decimal;
-    
+
             $bankCheck = BankCheck::create([
                 'payroll_id' => $payroll->id,
                 'date' => Carbon::now(),
@@ -109,7 +173,11 @@ class PayrollController extends Controller
                 'amount_in_words' => $amountInWords,
                 'ssn' => $interpreter->ssn,
                 'pay_to' => $interpreter->full_name,
-                'for' => 'Interpreting services provided from '. Carbon::parse($request->start_date)->format('m-d-Y') .' to '. Carbon::parse($request->end_date)->format('m-d-Y'),
+                'for' => 'Interpreting services provided from ' . Carbon::parse($request->start_date)->format('m-d-Y') . ' to ' . Carbon::parse($request->end_date)->format('m-d-Y'),
+                'address' => $interpreter->address,
+                'city' => $interpreter->city,
+                'state' => PayrollController::getAbbrState($interpreter->state),
+                'zip' => $interpreter->zip_code,
             ]);
 
             foreach ($interpreter->details as $detail) {
@@ -119,7 +187,7 @@ class PayrollController extends Controller
                     'bank_check_id' => $bankCheck->id,
                     'assignment_number' => $detail->assignment_number,
                     'date_of_service_provided' => $detail->date_of_service_provided,
-                    'location' => $address->address.', '.$address->city.', '.$address->state.', '.$address->zip_code,
+                    'location' => $address->address . ', ' . $address->city . ', ' . $address->state . ', ' . $address->zip_code,
                     'total_amount' => $detail->total_interpreter,
                 ]);
             }
@@ -138,7 +206,11 @@ class PayrollController extends Controller
                 'amount_in_words' => $amountInWords,
                 'ssn' => $coordinator->ssn, // '123-45-6789
                 'pay_to' => $coordinator->full_name,
-                'for' => 'Interpreting services provided from '. Carbon::parse($request->start_date)->format('m-d-Y') .' to '. Carbon::parse($request->end_date)->format('m-d-Y'),
+                'for' => 'Interpreting services provided from ' . Carbon::parse($request->start_date)->format('m-d-Y') . ' to ' . Carbon::parse($request->end_date)->format('m-d-Y'),
+                'address' => $coordinator->address,
+                'city' => $coordinator->city,
+                'state' => PayrollController::getAbbrState($coordinator->state),
+                'zip' => $coordinator->zip_code,
             ]);
 
             foreach ($coordinator->details as $detail) {
@@ -147,7 +219,7 @@ class PayrollController extends Controller
                     'bank_check_id' => $bankCheck->id,
                     'assignment_number' => $detail->assignment_number,
                     'date_of_service_provided' => $detail->date_of_service_provided,
-                    'location' => $address->address.', '.$address->city.', '.$address->state.', '.$address->zip_code,
+                    'location' => $address->address . ', ' . $address->city . ', ' . $address->state . ', ' . $address->zip_code,
                     'total_amount' => $detail->total_coordinator,
                 ]);
             }
@@ -160,7 +232,8 @@ class PayrollController extends Controller
         ], 201);
     }
 
-    public function review(Request $request){
+    public function review(Request $request)
+    {
         $request->validate([
             'start_date' => 'required | date',
             'end_date' => 'required  | date',
@@ -174,40 +247,40 @@ class PayrollController extends Controller
         */
 
         $review = Invoice::whereIn('invoices.status', ['paid', 'pending'])
-        ->where('invoices.payroll_id', null)
-        ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
-        ->select(
-            'invoices.id',
-            'invoices.agency_id',
-            'invoices.interpreter_id',
-            'invoices.coordinator_id',
-            'invoices.status',
-            'invoices.total_amount',
-            'invoices.created_at',
-            'invoices.updated_at',
-            
-            'invoice_details.id as detail_id',
-            'invoice_details.invoice_id',
-            'invoice_details.address_id',
-            'invoice_details.description_id',
-            'invoice_details.invoice_number',
-            'invoice_details.assignment_number',
-            'invoice_details.date_of_service_provided',
-            'invoice_details.arrival_time',
-            'invoice_details.start_time',
-            'invoice_details.end_time',
-            'invoice_details.travel_time_to_assignment',
-            'invoice_details.time_back_from_assignment',
-            'invoice_details.travel_mileage',
-            'invoice_details.cost_per_mile',
-            'invoice_details.total_amount_miles',
-            'invoice_details.total_amount_hours',
-            'invoice_details.total_interpreter',
-            'invoice_details.total_coordinator',
-            'invoice_details.comments',
-        )
-        ->get()
-        ->load('agency', 'interpreter', 'coordinator');
+            ->where('invoices.payroll_id', null)
+            ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
+            ->select(
+                'invoices.id',
+                'invoices.agency_id',
+                'invoices.interpreter_id',
+                'invoices.coordinator_id',
+                'invoices.status',
+                'invoices.total_amount',
+                'invoices.created_at',
+                'invoices.updated_at',
+
+                'invoice_details.id as detail_id',
+                'invoice_details.invoice_id',
+                'invoice_details.address_id',
+                'invoice_details.description_id',
+                'invoice_details.invoice_number',
+                'invoice_details.assignment_number',
+                'invoice_details.date_of_service_provided',
+                'invoice_details.arrival_time',
+                'invoice_details.start_time',
+                'invoice_details.end_time',
+                'invoice_details.travel_time_to_assignment',
+                'invoice_details.time_back_from_assignment',
+                'invoice_details.travel_mileage',
+                'invoice_details.cost_per_mile',
+                'invoice_details.total_amount_miles',
+                'invoice_details.total_amount_hours',
+                'invoice_details.total_interpreter',
+                'invoice_details.total_coordinator',
+                'invoice_details.comments',
+            )
+            ->get()
+            ->load('agency', 'interpreter', 'coordinator');
 
         return response()->json([
             'message' => 'Review created successfully',
@@ -234,7 +307,7 @@ class PayrollController extends Controller
 
         if ($days <= 15) {
             $interpreters = Invoice::where('invoices.payroll_id', $payroll->id)
-            ->whereIn('invoices.status', ['paid', 'pending'])
+                ->whereIn('invoices.status', ['paid', 'pending'])
                 ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
                 ->join('addresses', 'invoice_details.address_id', '=', 'addresses.id')
                 ->join('interpreters', 'invoices.interpreter_id', '=', 'interpreters.id')
@@ -243,7 +316,7 @@ class PayrollController extends Controller
                 ->groupBy('interpreter_id');
 
             $coordinator = Invoice::where('invoices.payroll_id', $payroll->id)
-            ->whereIn('invoices.status', ['paid', 'pending'])
+                ->whereIn('invoices.status', ['paid', 'pending'])
                 ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
                 ->join('addresses', 'invoice_details.address_id', '=', 'addresses.id')
                 ->join('coordinators', 'invoices.coordinator_id', '=', 'coordinators.id')
@@ -258,7 +331,7 @@ class PayrollController extends Controller
                 'coordinator' => $coordinator,
             ]);
             return $pdf->stream('fortnightly.pdf');
-        }else {
+        } else {
             return response()->json([
                 'message' => 'El rango de fecha no corresponde a una quincena o mes',
                 'success' => false,
@@ -282,6 +355,4 @@ class PayrollController extends Controller
         Invoice::where('payroll_id', $payroll->id)->update(['payroll_id' => null]);
         return $payroll->delete();
     }
-
-
 }
