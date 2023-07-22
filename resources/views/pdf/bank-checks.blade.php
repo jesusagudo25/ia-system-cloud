@@ -124,7 +124,7 @@
                                     32211-3284</strong></span></p>
                     </td>
                     <td nowrap colspan=5 rowspan=2 valign=top align=right <img src={{ asset('images/vystar.jpg') }}
-                        alt="FABLAB" style="width: 60%;"> </td>
+                        alt="FABLAB" style="width: 70%;"> </td>
                     </td>
                     <td width="16%" nowrap colspan=3 valign=bottom
                         style='width:16.82%; border-left:none;padding:0cm 5.4pt 0cm 5.4pt; '>
@@ -173,9 +173,9 @@
                 <tr>
                     <td width="70%" colspan=14 valign=bottom
                         style='border-top:none; border-left:none; padding:0cm 5.4pt 0cm 5.4pt; border-bottom: 1.2px solid black;'>
-                        <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'>
-                            <span lang=EN-US style='color:black'>Pay ****{{ strtoupper($check->amount_in_words) }} US
-                                DOLLARS</span>
+                        <p class=MsoNormal style='margin-bottom:0cm;line-height:normal; font-weight: bold;'>
+                            Pay ****{{ strtoupper($check->amount_in_words) }} US
+                                DOLLARS
                         </p>
                     </td>
                     <td width="30%" nowrap colspan=5 valign=bottom
@@ -183,7 +183,7 @@
                         <p class=MsoNormal
                             style='margin-bottom:0cm;line-height:normal; padding: 2pt; text-align: right;'>
                             <span lang=EN-US
-                                style='font-size:12.0pt;color:black;'>****${{ number_format($check->amount, 2) }}</span>
+                                style='font-size:12.0pt;color:black; font-weight: bold;'>****${{ number_format($check->amount, 2) }}</span>
                         </p>
                     </td>
                     <td style='border:none;padding:0cm 0cm 0cm 0cm' width="0%">
@@ -195,8 +195,8 @@
 
                     </td>
                     <td width="16%" nowrap colspan=6 valign=top style=''>
-                        <p class=MsoNormal style='margin-bottom:0cm; text-align: center;'>
-                            <span lang=EN-US style='font-size:8.0pt;color:black'>VOID AFTER 120 DAYS</span>
+                        <p class=MsoNormal style='margin-bottom:0cm; text-align: center;height:15.4pt'>
+                            <span lang=EN-US style='font-size:9.5pt;color:black'>VOID AFTER 120 DAYS</span>
                         </p>
                     </td>
                     <td style='border:none;padding:0cm 0cm 0cm 0cm' width="0%">
@@ -210,12 +210,18 @@
                     </td>
                     <td nowrap colspan=8 valign=top rowspan=3
                         style=' border-top:none;padding:0cm 5.4pt 0cm 5.4pt; height:25pt'>
-                        <p class=MsoNormal style='margin-bottom:0cm;line-height:normal; font-size: 9.0pt;'>
+                        <p class=MsoNormal style='margin-bottom:0cm;line-height:normal;font-weight: bold;'>
                             to the Order of:<br>
                             {{ $check->pay_to }}<br>
+                            @if(!empty($check->address))
                             {{ $check->address }}<br>
                             {{ strtoupper($check->city) }}, {{ $check->state }} {{ $check->zip }}<br>
                             USA
+                            @else
+                            &nbsp;<br>
+                            &nbsp;<br>
+                            &nbsp;
+                            @endif
                         </p>
                     </td>
                     <td nowrap colspan=12 valign=bottom
@@ -253,17 +259,16 @@
                     </td>
 
                     <td width="30%" nowrap colspan=2 valign=bottom
-                        style='width:30.66%; border-top:none;border-left:none;padding:0cm 5.4pt 0cm 5.4pt;height:15.4pt;'>
+                        style=''>
                     </td>
-                    <td width="99%" nowrap colspan=8 valign=bottom style=''>
-                        <p style="font-size: 9.0pt; text-align: center;">
-                            Authorized Signature</p>
+                    <td width="99%" nowrap colspan=8 valign=top style='text-align: center; font-size: 9.5pt;'>
+                    Authorized Signature
                     </td>
                     <td style='border:none;' width="0%">
                         <p class='msoFalse'>&nbsp; </p>
                     </td>
                 </tr>
-                <td nowrap colspan=21 valign=bottom style=' border-top:none;padding:0cm 5.4pt 0cm 5.4pt; height:5pt'>
+                <td nowrap colspan=21 valign=bottom style=' border-top:none;padding:0cm 5.4pt 0cm 5.4pt; height:25pt'>
                 </td>
                 <td style='border:none;padding:0cm 0cm 0cm 0cm' width="0%">
 
