@@ -12,6 +12,7 @@ class Lenguage extends Model
     protected $fillable = [
         'name',
         'price_per_hour',
+        'price_per_hour_interpreter',
     ];
 
     public function interpreters()

@@ -28,6 +28,7 @@ class LenguageController extends Controller
         $request->validate([
             'name' => 'required',
             'price_per_hour' => 'required',
+            'price_per_hour_interpreter' => 'required',
         ]);
         $lenguage = Lenguage::create($request->all());
 
