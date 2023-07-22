@@ -323,12 +323,22 @@ class PayrollController extends Controller
                 ->select('coordinators.*', 'addresses.address as locationAddress', 'addresses.city as locationCity', 'addresses.state as locationState', 'addresses.zip_code as locationZipCode', 'invoice_details.*', 'invoices.*')
                 ->get();
 
+            // find services by miscellaneous != 0
+            $miscellaneous = Invoice::where('invoices.payroll_id', $payroll->id)
+                ->whereIn('invoices.status', ['paid', 'pending'])
+                ->where('invoice_details.miscellaneous', '!=', 0)
+                ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
+                ->join('addresses', 'invoice_details.address_id', '=', 'addresses.id')
+                ->join('coordinators', 'invoices.coordinator_id', '=', 'coordinators.id')
+                ->select('coordinators.*', 'addresses.address as locationAddress', 'addresses.city as locationCity', 'addresses.state as locationState', 'addresses.zip_code as locationZipCode', 'invoice_details.*', 'invoices.*')
+                ->get();
 
 
             $pdf = \PDF::loadView('pdf.fortnightly', [
                 'payroll' => $payroll,
                 'interpreters' => array_values($interpreters->toArray()),
                 'coordinator' => $coordinator,
+                'miscellaneous' => $miscellaneous,
             ]);
             return $pdf->stream('fortnightly.pdf');
         } else {

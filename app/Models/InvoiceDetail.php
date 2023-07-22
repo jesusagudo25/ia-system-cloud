@@ -20,6 +20,8 @@ class InvoiceDetail extends Model
         'end_time',
         'travel_time_to_assignment',
         'time_back_from_assignment',
+        'miscellaneous',
+        'total_internal',
         'travel_mileage',
         'cost_per_mile',
         'total_amount_miles',

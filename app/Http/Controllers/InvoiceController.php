@@ -30,12 +30,20 @@ class InvoiceController extends Controller
      */
     public function validateAssignmentNumber($assignmentNumber)
     {
-        $invoice = InvoiceDetail::where('assignment_number', $assignmentNumber)->first();
-        if($invoice != null){
-            return response()->json([
-                'message' => 'The assignment number already exists',
-                'status' => 'error',
-            ], 400);
+        $invoiceDetail = InvoiceDetail::where('assignment_number', $assignmentNumber)->first();
+        if($invoiceDetail != null){
+            if($invoiceDetail->invoice->status != 'cancelled'){
+                return response()->json([
+                    'message' => 'The assignment number is already in use',
+                    'status' => 'error',
+                ], 400);
+            }
+            else{
+                return response()->json([
+                    'message' => 'The assignment number is available',
+                    'status' => 'success',
+                ], 200);
+            }
         }
         else{
             return response()->json([
@@ -50,13 +58,12 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        //Obtener el interprete que viene en el request
-        //Si el valor es null, entonces hay que crearlo
+        //Obtener entidades utilizadas en el request
         $interpreter_id = $request->has('interpreter_id') ? $request->interpreter_id : null;
         $address_id = $request->has('address_id') ? $request->address_id : null;
         $description_id = $request->has('description_id') ? $request->description_id : null;
 
-        //FindOrFails interprete
+        //FindOrFails Interpreter, address and description
 
         if (empty($interpreter_id)) {
             $interpreter = Interpreter::create([
@@ -134,6 +141,7 @@ class InvoiceController extends Controller
             'end_time' => $request->end_time,
             'travel_time_to_assignment' => $request->travel_time_to_assignment,
             'time_back_from_assignment' => $request->time_back_from_assignment,
+            'miscellaneous' => $request->miscellaneous,
             'travel_mileage' => $request->travel_mileage,
             'cost_per_mile' => $request->cost_per_mile,
             'total_amount_miles' => $request->total_amount_miles,
