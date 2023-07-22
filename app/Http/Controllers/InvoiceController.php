@@ -287,6 +287,7 @@ class InvoiceController extends Controller
             'end_time' => $request->end_time,
             'travel_time_to_assignment' => $request->travel_time_to_assignment,
             'time_back_from_assignment' => $request->time_back_from_assignment,
+            'miscellaneous' => $request->miscellaneous,
             'travel_mileage' => $request->travel_mileage,
             'cost_per_mile' => $request->cost_per_mile,
             'total_amount_miles' => $request->total_amount_miles,
