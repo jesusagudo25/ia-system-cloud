@@ -34,13 +34,19 @@ class ReportController extends Controller
 
         /* get curent monthly income (coordinators) and expenses (interpreters) */
 
-        $currentMonth = date('m');
-        $currentYear = date('Y');
-        $start_date = date('Y-m-d', strtotime("first day of $currentMonth $currentYear"));
-        $end_date = date('Y-m-d', strtotime("last day of $currentMonth $currentYear"));
-        $invoices = Invoice::whereBetween('updated_at', [$start_date, $end_date])->get()->load('invoiceDetails')->where('payroll_id', '!=', null)->pluck('invoiceDetails')->flatten();
-        $totalIncome = $invoices->sum('total_coordinator');
-        $totalExpenses = $invoices->sum('total_interpreter');
+        $start_date = Carbon::now()->startOfMonth();
+        $end_date = Carbon::now()->endOfMonth();
+
+        $totalIncome = Invoice::whereBetween('invoice_details.date_of_service_provided', [$start_date, $end_date])
+                    ->whereIn('invoices.status', ['paid', 'pending'])
+                    ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
+                    ->sum('invoices.total_amount');
+
+        $totalExpenses = Invoice::whereBetween('invoice_details.date_of_service_provided', [$start_date, $end_date])
+                    ->whereIn('invoices.status', ['paid', 'pending'])
+                    ->where('invoices.payroll_id', '!=', null)
+                    ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
+                    ->sum('invoice_details.total_interpreter');
 
         return [
             'total_agencies' => $totalAgencies,
