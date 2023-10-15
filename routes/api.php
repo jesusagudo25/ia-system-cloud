@@ -4,6 +4,7 @@ use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BankCheckController;
+use App\Http\Controllers\BankCheckPreviewController;
 use App\Http\Controllers\CoordinatorController;
 use App\Http\Controllers\DescriptionController;
 use App\Http\Controllers\InterpreterController;
@@ -11,7 +12,9 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LenguageController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RequestController;
 use App\Http\Controllers\UserController;
+use App\Models\BankCheckPreview;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -80,25 +83,6 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::delete('invoices/{invoice}', 'destroy');
     });
     
-    Route::controller(PayrollController::class)->group(function () {
-        Route::get('payrolls', 'index');
-        Route::get('payrolls/{payroll}', 'show');
-
-        Route::post('/payrolls/review', 'review');
-        Route::post('payrolls', 'store');
-        Route::put('payrolls/{payroll}', 'update');
-        Route::delete('payrolls/{payroll}', 'destroy');
-    });
-    
-    Route::controller(BankCheckController::class)->group(function () {
-        Route::get('bank-checks', 'index');
-        Route::get('bank-checks/{bankCheck}', 'show');
-
-        Route::post('bank-checks', 'store');
-        Route::put('bank-checks/{bankCheck}', 'update');
-        Route::delete('bank-checks/{bankCheck}', 'destroy');
-    });
-    
     Route::controller(AddressController::class)->group(function () {
         Route::get('addresses', 'index');
         Route::get('addresses/{address}', 'show');
@@ -136,6 +120,32 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::put('reports/{report}', 'update');
         Route::delete('reports/{report}', 'destroy');
     });
+
+    Route::controller(RequestController::class)->group(function () {
+        Route::get('requests', 'index');
+        Route::get('requests/{request}', 'show');
+        Route::get('/requests/review/{startDate}/{endDate}/', 'review');
+        Route::post('requests', 'store');
+        Route::put('requests/{request}', 'update');
+        Route::put('requests/new-status/{requestUpdate}', 'newStatus');
+        Route::delete('requests/{request}', 'destroy');
+    });
+
+    Route::controller(PayrollController::class)->group(function () {
+        Route::get('payrolls', 'index');
+        Route::get('payrolls/{payroll}', 'show');
+        Route::post('payrolls', 'store');
+        Route::put('payrolls/{payroll}', 'update');
+        Route::delete('payrolls/{payroll}', 'destroy');
+    });
+    
+    Route::controller(BankCheckController::class)->group(function () {
+        Route::get('bank-checks', 'index');
+        Route::get('bank-checks/{bankCheck}', 'show');
+        Route::post('bank-checks', 'store');
+        Route::put('bank-checks/{bankCheck}', 'update');
+        Route::delete('bank-checks/{bankCheck}', 'destroy');
+    });
 });
 
 Route::controller(AuthController::class)->group(function(){
@@ -149,4 +159,6 @@ Route::controller(AuthController::class)->group(function(){
 Route::get('/invoices/{invoice}/download', [InvoiceController::class, 'pdf']);
 Route::get('/payrolls/{payroll}/download', [PayrollController::class, 'pdf']);
 Route::get('/bank-checks/{payroll}/download', [BankCheckController::class, 'pdf']);
+Route::get('/requests/{request}/download', [RequestController::class, 'pdf']);
+Route::get('/bank-checks-preview/{request}/download', [BankCheckPreviewController::class, 'pdf']);
 Route::get('/reports/{report}/download', [ReportController::class, 'pdf']);

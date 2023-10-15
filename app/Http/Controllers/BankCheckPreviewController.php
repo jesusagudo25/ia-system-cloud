@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BankCheck;
+use App\Models\BankCheckPreview;
+use Illuminate\Http\Request as HttpRequest;
+
 use App\Models\Invoice;
-use App\Models\Payroll;
-use Illuminate\Http\Request;
+use App\Models\Request;
+use App\Models\Request as ModelsRequest;
 use Illuminate\Support\Facades\DB;
 use NumberFormatter;
 use PDF;
 
-class BankCheckController extends Controller
+class BankCheckPreviewController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -23,7 +25,7 @@ class BankCheckController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(HttpRequest $request)
     {
         //
     }
@@ -31,20 +33,16 @@ class BankCheckController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(BankCheck $bankCheck)
+    public function show(BankCheckPreview $bankCheckPreview)
     {
         //
     }
 
-    /**
-     * Show PDF
-     */
-
-    public function pdf(Payroll $payroll)
+    public function pdf(Request $request)
     {
         $pdf = PDF::loadView('pdf.bank-checks', [
-            'checks' => $payroll->bankChecks()->get()->load('checkDetails'),
-            'preview' => 'false'
+            'checks' => $request->bankCheckPreviews()->get()->load('checkDetailPreviews'),
+            'preview' => 'true'
         ]);
         $pdf->setPaper('letter', 'portrait');
         $pdf->setOptions([
@@ -62,7 +60,7 @@ class BankCheckController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, BankCheck $bankCheck)
+    public function update(HttpR $request, BankCheckPreview $bankCheckPreview)
     {
         //
     }
@@ -70,7 +68,7 @@ class BankCheckController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(BankCheck $bankCheck)
+    public function destroy(BankCheckPreview $bankCheckPreview)
     {
         //
     }

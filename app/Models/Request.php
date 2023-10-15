@@ -5,14 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Payroll extends Model
+class Request extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'request_id',
         'suffix_id',
+        'user_id',
         'month',
         'start_date',
         'end_date',
@@ -24,9 +23,9 @@ class Payroll extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function bankChecks()
+    public function bankCheckPreviews()
     {
-        return $this->hasMany(BankCheck::class);
+        return $this->hasMany(BankCheckPreview::class);
     }
 
     public function invoices()
@@ -34,8 +33,8 @@ class Payroll extends Model
         return $this->hasMany(Invoice::class);
     }
 
-    public function request()
+    public function payrolls()
     {
-        return $this->belongsTo(Request::class);
+        return $this->hasMany(Payroll::class);
     }
 }
