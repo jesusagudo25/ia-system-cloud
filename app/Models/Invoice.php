@@ -52,4 +52,9 @@ class Invoice extends Model
     {
         return $this->belongsTo(Payroll::class);
     }
+
+    public function request()
+    {
+        return $this->belongsTo(Request::class);
+    }
 }

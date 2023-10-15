@@ -44,7 +44,7 @@ class BankCheckController extends Controller
     {
         $pdf = PDF::loadView('pdf.bank-checks', [
             'checks' => $payroll->bankChecks()->get()->load('checkDetails'),
-            'preview' => 'false'
+            'preview' => false
         ]);
         $pdf->setPaper('letter', 'portrait');
         $pdf->setOptions([

@@ -308,9 +308,31 @@ class InvoiceController extends Controller
     public function validatePayroll(Invoice $invoice)
     {
         //Find invoice and validate if id_payroll is not null
-        if ($invoice->payroll_id != null) {
+        
+        try {
+            $invoiceRequest = Invoice::with('payroll')->where('id', $invoice->id)->first();
+
+            if ($invoiceRequest->payroll_id != null && $invoiceRequest->payroll->status == 'created') {
+                return response()->json([
+                    'message' => 'Service already has a payroll',
+                    'status' => 'error',
+                ], 400);
+            }
+        } catch (\Throwable $th) {
+            if ($invoiceRequest->payroll_id != null) {
+                return response()->json([
+                    'message' => 'Service already has a payroll',
+                    'status' => 'error',
+                ], 400);
+            }
+        }
+
+
+        $invoiceRequest = Invoice::with('request')->where('id', $invoice->id)->first();
+
+        if($invoiceRequest->request_id != null && ($invoiceRequest->request->status == 'completed' || $invoiceRequest->request->status == 'pending')){
             return response()->json([
-                'message' => 'Service already has a payroll',
+                'message' => 'Service already has a request',
                 'status' => 'error',
             ], 400);
         }
@@ -319,9 +341,21 @@ class InvoiceController extends Controller
     public function newStatus(Request $request, Invoice $invoice)
     {
         //Find invoice and validate if id_payroll is not null
-        if ($invoice->payroll_id != null && $request->status == 'cancelled') {
+
+        $invoiceRequest = Invoice::with('payroll')->where('id', $invoice->id)->first();
+
+        if ($invoice->payroll_id != null && $invoiceRequest->payroll->status == 'created' && $request->status == 'cancelled') {
             return response()->json([
                 'message' => 'Service already has a payroll',
+                'status' => 'error',
+            ], 400);
+        }
+
+        $invoiceRequest = Invoice::with('request')->where('id', $invoice->id)->first();
+
+        if($invoiceRequest->request_id != null && ($invoiceRequest->request->status == 'completed' || $invoiceRequest->request->status == 'pending') && $request->status == 'cancelled'){
+            return response()->json([
+                'message' => 'Service already has a request',
                 'status' => 'error',
             ], 400);
         }

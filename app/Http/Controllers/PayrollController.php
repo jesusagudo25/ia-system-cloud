@@ -81,7 +81,7 @@ class PayrollController extends Controller
                 'interpreters' => array_values($interpreters->toArray()),
                 'coordinator' => $coordinator,
                 'miscellaneous' => $miscellaneous,
-                'preview' => 'false'
+                'preview' => false
             ]);
             return $pdf->stream('fortnightly.pdf');
         } else {
