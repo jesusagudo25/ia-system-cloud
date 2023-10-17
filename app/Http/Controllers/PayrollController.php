@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Address;
-use App\Models\BankCheck;
-use App\Models\CheckDetail;
-use App\Models\Interpreter;
+
 use App\Models\Invoice;
-use App\Models\InvoiceDetail;
+
 use App\Models\Payroll;
-use Carbon\Carbon;
+
 use Illuminate\Http\Request;
-use NumberFormatter;
+
 
 class PayrollController extends Controller
 {
@@ -36,7 +33,13 @@ class PayrollController extends Controller
      */
     public function show(Payroll $payroll)
     {
-        //
+        return $payroll->load('user')->load('request')->load('bankChecks')->load('invoices');
+    }
+
+    public function lastPayroll()
+    {
+        //return last in array
+        return Payroll::all()->last();
     }
 
     public function pdf(Payroll $payroll)

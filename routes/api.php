@@ -162,3 +162,4 @@ Route::get('/bank-checks/{payroll}/download', [BankCheckController::class, 'pdf'
 Route::get('/requests/{request}/download', [RequestController::class, 'pdf']);
 Route::get('/bank-checks-preview/{request}/download', [BankCheckPreviewController::class, 'pdf']);
 Route::get('/reports/{report}/download', [ReportController::class, 'pdf']);
+Route::get('/last-payroll', [PayrollController::class, 'lastPayroll']);
