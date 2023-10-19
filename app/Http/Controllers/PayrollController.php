@@ -39,7 +39,60 @@ class PayrollController extends Controller
     public function lastPayroll()
     {
         //return last in array
-        return Payroll::all()->last();
+        return Payroll::where('status', '!=', 'cancelled')->orderBy('id', 'desc')->first();
+    }
+
+    public function wizard(Payroll $payroll)
+    {
+
+        $review = Invoice::whereIn('invoices.status', ['paid', 'pending'])
+            ->where(function ($query) use ($payroll) {
+                $query->where('invoices.payroll_id', $payroll->id)
+                    ->orWhere('invoices.payroll_id', null);
+            })
+            ->where(function ($query) use ($payroll) {
+                $query->where('invoices.request_id', $payroll->request_id)
+                    ->orWhere('invoices.request_id', null);
+            })
+            ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
+            ->select(
+                'invoices.id',
+                'invoices.agency_id',
+                'invoices.interpreter_id',
+                'invoices.coordinator_id',
+                'invoices.status',
+                'invoices.total_amount',
+                'invoices.created_at',
+                'invoices.updated_at',
+                'invoices.payroll_id',
+                'invoice_details.id as detail_id',
+                'invoice_details.invoice_id',
+                'invoice_details.address_id',
+                'invoice_details.description_id',
+                'invoice_details.invoice_number',
+                'invoice_details.assignment_number',
+                'invoice_details.date_of_service_provided',
+                'invoice_details.arrival_time',
+                'invoice_details.start_time',
+                'invoice_details.end_time',
+                'invoice_details.travel_time_to_assignment',
+                'invoice_details.time_back_from_assignment',
+                'invoice_details.travel_mileage',
+                'invoice_details.cost_per_mile',
+                'invoice_details.total_amount_miles',
+                'invoice_details.total_amount_hours',
+                'invoice_details.total_interpreter',
+                'invoice_details.total_coordinator',
+                'invoice_details.comments',
+            )
+            ->get()
+            ->load('agency', 'interpreter', 'coordinator');
+
+        return response()->json([
+            'message' => 'Review created successfully',
+            'success' => true,
+            'review' => $review
+        ], 201);
     }
 
     public function pdf(Payroll $payroll)

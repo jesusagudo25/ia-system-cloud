@@ -37,4 +37,9 @@ class Request extends Model
     {
         return $this->hasMany(Payroll::class);
     }
+
+    public function car_wizards()
+    {
+        return $this->hasMany(CARWizard::class);
+    }
 }

@@ -16,10 +16,13 @@ return new class extends Migration
             $table->foreignId('payroll_id')->constrained()
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
+            $table->foreignId('request_id')->nullable()->constrained()
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->foreignId('user_id')->constrained()
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->string('description');
+            $table->string('action');
             $table->text('comment')->nullable();
             $table->timestamps();
         });

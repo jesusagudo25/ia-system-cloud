@@ -5,6 +5,7 @@ use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BankCheckController;
 use App\Http\Controllers\BankCheckPreviewController;
+use App\Http\Controllers\CARWizardController;
 use App\Http\Controllers\CoordinatorController;
 use App\Http\Controllers\DescriptionController;
 use App\Http\Controllers\InterpreterController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\UserController;
 use App\Models\BankCheckPreview;
+use App\Models\CARWizard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -134,6 +136,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::controller(PayrollController::class)->group(function () {
         Route::get('payrolls', 'index');
         Route::get('payrolls/{payroll}', 'show');
+        Route::get('payrolls/wizard/{payroll}', 'wizard');
         Route::post('payrolls', 'store');
         Route::put('payrolls/{payroll}', 'update');
         Route::delete('payrolls/{payroll}', 'destroy');
@@ -145,6 +148,14 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::post('bank-checks', 'store');
         Route::put('bank-checks/{bankCheck}', 'update');
         Route::delete('bank-checks/{bankCheck}', 'destroy');
+    });
+
+    Route::controller(CARWizardController::class)->group(function () {
+        Route::get('car-wizard', 'index');
+        Route::get('car-wizard/{carWizard}', 'show');
+        Route::post('car-wizard', 'store');
+        Route::put('car-wizard/{carWizard}', 'update');
+        Route::delete('car-wizard/{carWizard}', 'destroy');
     });
 });
 

@@ -15,6 +15,7 @@ use App\Models\Invoice;
 use App\Models\InvoiceDetail;
 use App\Models\Payroll;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use NumberFormatter;
 
 class RequestController extends Controller
@@ -28,7 +29,7 @@ class RequestController extends Controller
     }
 
 
-    public function getAbbrState($state)
+    public static function getAbbrState($state)
     {
         $statesUSA = array(
             'Alabama' => 'AL',
@@ -115,11 +116,15 @@ class RequestController extends Controller
             ->selectRaw('sum(invoices.total_amount) as total_amount')
             ->get();
 
-        //get last request id
-        $lastRequest = Request::orderBy('id', 'desc')->first();
+        //get last request id -> validate if exist
+        if(Request::all()->last() == null){
+            $lastRequest = 0;
+        }else{
+            $lastRequest = Request::all()->last()->id;
+        }
 
         //create suffix_id
-        $suffix_id = 'PR-' . str_pad($lastRequest->id + 1, 5, '0', STR_PAD_LEFT);
+        $suffix_id = 'PR-' . str_pad($lastRequest + 1, 5, '0', STR_PAD_LEFT);
 
         $requestPayroll = Request::create([
             'user_id' => $request->user_id,
@@ -397,10 +402,10 @@ class RequestController extends Controller
             $requestPayroll = Request::where('id', $requestUpdate->id)->first();
 
             //get last payroll id
-            $lastPayroll = Payroll::orderBy('id', 'desc')->first();
+            $lastPayroll = Payroll::all()->last()->id;
 
             //create suffix_id
-            $suffix_id = 'P-' . str_pad($lastPayroll->id + 1, 5, '0', STR_PAD_LEFT);
+            $suffix_id = 'P-' . str_pad($lastPayroll + 1, 5, '0', STR_PAD_LEFT);
 
             $payroll = Payroll::create([
                 'user_id' => $requestPayroll->user_id,
@@ -466,6 +471,9 @@ class RequestController extends Controller
 
             //search services by request_id from invoices table and update request_id to null
             Invoice::where('request_id', $requestUpdate->id)->update(['request_id' => null]);
+
+            //Search bank_check_previews by request_id from bank_check_previews table and delete
+            BankCheckPreview::where('request_id', $requestUpdate->id)->delete();
         }
 
         Request::where('id', $requestUpdate->id)->update(['status' => $request->status]);

@@ -38,4 +38,9 @@ class Payroll extends Model
     {
         return $this->belongsTo(Request::class);
     }
+
+    public function car_wizards()
+    {
+        return $this->hasMany(CARWizard::class);
+    }
 }

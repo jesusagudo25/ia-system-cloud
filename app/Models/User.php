@@ -56,5 +56,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Invoice::class);
     }
+
+    public function car_wizards()
+    {
+        return $this->hasMany(CARWizard::class);
+    }
     
 }
