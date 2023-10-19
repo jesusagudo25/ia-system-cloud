@@ -67,10 +67,9 @@ class CARWizardController extends Controller
 
         //Falta lo importante, setear los autoincrement de las tablas bank_checks
 
+        //search payroll
+        $payrollSearch = Payroll::find($request->payroll);
         if ($request->actionRequest == 'Regenerate') {
-
-            //search payroll
-            $payrollSearch = Payroll::find($request->payroll);
 
             //get last payroll id
             $lastPayroll = Payroll::all()->last()->id;
@@ -95,7 +94,7 @@ class CARWizardController extends Controller
                 'total_amount' =>  $total[0]['total_amount'] ? $total[0]['total_amount'] : 0
             ]);
 
-            $commentIAJROBOT.= ' | IAJ ROBOT: NEW PAYROLL CREATED WITH ID ' . $newPayroll->suffix_id;
+            $commentIAJROBOT .= ' | IAJ ROBOT: NEW PAYROLL CREATED WITH ID ' . $newPayroll->suffix_id;
 
             //search services by request_id from invoices table
 
@@ -154,7 +153,7 @@ class CARWizardController extends Controller
                     'amount_in_words' => $amountInWords,
                     'ssn' => $interpreter->ssn,
                     'pay_to' => $interpreter->full_name,
-                    'for' => 'Interpreting services provided from ' . Carbon::parse($request->start_date)->format('m-d-Y') . ' to ' . Carbon::parse($request->end_date)->format('m-d-Y'),
+                    'for' => 'Interpreting services provided from ' . Carbon::parse($payrollSearch->start_date)->format('m-d-Y') . ' to ' . Carbon::parse($payrollSearch->end_date)->format('m-d-Y'),
                     'address' => $interpreter->address,
                     'city' => $interpreter->city,
                     'state' => RequestController::getAbbrState($interpreter->state),
@@ -187,7 +186,7 @@ class CARWizardController extends Controller
                     'amount_in_words' => $amountInWords,
                     'ssn' => $coordinator->ssn, // '123-45-6789
                     'pay_to' => $coordinator->full_name,
-                    'for' => 'Interpreting services provided from ' . Carbon::parse($request->start_date)->format('m-d-Y') . ' to ' . Carbon::parse($request->end_date)->format('m-d-Y'),
+                    'for' => 'Interpreting services provided from ' . Carbon::parse($payrollSearch->start_date)->format('m-d-Y') . ' to ' . Carbon::parse($payrollSearch->end_date)->format('m-d-Y'),
                     'address' => $coordinator->address,
                     'city' => $coordinator->city,
                     'state' => RequestController::getAbbrState($coordinator->state),
@@ -210,7 +209,7 @@ class CARWizardController extends Controller
         //insert into car_wizard log --------------------
         $carWizard = new CARWizard();
         $carWizard->payroll_id = $payrollCancel->id;
-        $carWizard->request_id = $request->id;
+        $carWizard->request_id = $payrollSearch->request_id ? $payrollSearch->request_id : null;
         $carWizard->user_id = $request->user_id;
         $carWizard->comment = empty($request->comments) ?
             $commentIAJROBOT :
