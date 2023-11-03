@@ -128,8 +128,8 @@
                                     style='font-size:10.0pt;color:black; font-size: 13.5px;'><strong>JACKSONVILLE, FL
                                         32211-3284</strong></span></p>
                         </td>
-                        <td nowrap colspan=5 rowspan=2 valign=top align=right <img src={{ asset('images/vystar.jpg') }}
-                            alt="FABLAB" style="width: 70%;"> </td>
+                        <td nowrap colspan=5 rowspan=2 valign=top align=right> <img src={{ asset('images/vystar.jpg') }}
+                            alt="LOGO" style="width: 70%;"> </td>
                         </td>
                         <td width="16%" nowrap colspan=3 valign=bottom
                             style='width:16.82%; border-left:none;padding:0cm 5.4pt 0cm 5.4pt; '>

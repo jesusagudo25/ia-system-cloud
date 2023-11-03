@@ -376,18 +376,7 @@ class RequestController extends Controller
 
     public function newStatus(HttpRequest $request, Request $requestUpdate)
     {
-        /*transfers data from request to payroll
-            List table from:
-                -requests
-                -bank_check_previews
-                -check_detail_previews
-
-            List table to:
-                - bank_checks
-                - bank_check_details
-                - payrolls
-        */
-
+        
         if ($request->status == 'completed') {
             //search if exist a payroll with the same request_id
             $payroll = Payroll::where('request_id', $requestUpdate->id)->first();
@@ -430,7 +419,7 @@ class RequestController extends Controller
             $bankChecks = BankCheckPreview::where('request_id', $requestPayroll->id)->get();
 
             foreach ($bankChecks as $bankCheck) {
-                $bankCheck = BankCheck::create([
+                $newBankCheck = BankCheck::create([
                     'payroll_id' => $payroll->id,
                     'date' => $bankCheck->date,
                     'amount' => $bankCheck->amount,
@@ -448,7 +437,7 @@ class RequestController extends Controller
 
                 foreach ($checkDetails as $checkDetail) {
                     $checkDetail = CheckDetail::create([
-                        'bank_check_id' => $bankCheck->id,
+                        'bank_check_id' => $newBankCheck->id,
                         'assignment_number' => $checkDetail->assignment_number,
                         'date_of_service_provided' => $checkDetail->date_of_service_provided,
                         'location' => $checkDetail->location,
