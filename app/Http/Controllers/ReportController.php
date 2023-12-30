@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use App\Models\Report;
 use App\Models\Invoice;
 use App\Models\Interpreter;
+use App\Models\Payroll;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -32,22 +33,30 @@ class ReportController extends Controller
         /* Get total interpreters */
         $totalInterpreters = Interpreter::count();
 
-        /* get curent monthly income (coordinators) and expenses (interpreters) */
+        /* get current monthly income (coordinators) and expenses (interpreters) */
 
         $start_date = Carbon::now()->startOfMonth();
         $end_date = Carbon::now()->endOfMonth();
 
-        $totalIncome = Invoice::whereBetween('invoice_details.date_of_service_provided', [$start_date, $end_date])
-                    ->whereIn('invoices.status', ['paid', 'pending'])
+        $totalCoordinator = Payroll::whereBetween('payrolls.created_at', [$start_date, $end_date])
+                    ->join('invoices', 'payrolls.id', '=', 'invoices.payroll_id')
                     ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
-                    ->sum('invoices.total_amount');
+                    ->sum('invoice_details.total_coordinator');
 
-        $totalExpenses = Invoice::whereBetween('invoice_details.date_of_service_provided', [$start_date, $end_date])
-                    ->whereIn('invoices.status', ['paid', 'pending'])
-                    ->where('invoices.payroll_id', '!=', null)
+        //15 (AnnaBelle Tomlinson)
+        $totalInterpreter = Payroll::whereBetween('payrolls.created_at', [$start_date, $end_date])
+                    ->join('invoices', 'payrolls.id', '=', 'invoices.payroll_id')
                     ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
+                    ->whereIn('invoices.interpreter_id', [15])
                     ->sum('invoice_details.total_interpreter');
 
+        $totalIncome = $totalCoordinator + $totalInterpreter;
+
+        $totalExpenses = Payroll::whereBetween('payrolls.created_at', [$start_date, $end_date])
+                    ->join('invoices', 'payrolls.id', '=', 'invoices.payroll_id')
+                    ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
+                    ->whereNotIn('invoices.interpreter_id', [15])
+                    ->sum('invoice_details.total_interpreter');
         return [
             'total_agencies' => $totalAgencies,
             'total_interpreters' => $totalInterpreters,
