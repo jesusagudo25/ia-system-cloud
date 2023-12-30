@@ -12,7 +12,7 @@ class InterpreterController extends Controller
      */
     public function index()
     {
-        return Interpreter::all();
+        return Interpreter::with('lenguage')->get();
     }
 
     public function indexStatus()
