@@ -157,7 +157,7 @@
                             <p class=MsoNormal align=right
                                 style='margin-bottom:0cm;text-align:right; text-indent:9.0pt;line-height:normal'>
                                 <span lang=EN-US
-                                    style='font-size: 9.0pt;'><strong>{{ Carbon\Carbon::parse($check->check_date)->format('m-d-Y') }}</strong></span>
+                                    style='font-size: 9.0pt;'><strong>{{ Carbon\Carbon::parse($check->date)->format('m-d-Y') }}</strong></span>
                             </p>
                         </td>
                         <td width="7%" nowrap colspan=3 valign=bottom
