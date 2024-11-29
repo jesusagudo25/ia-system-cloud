@@ -15,6 +15,7 @@ class InvoiceDetail extends Model
         'assignment_number',
         'description_id',
         'date_of_service_provided',
+        'date_of_completion_service',
         'arrival_time',
         'start_time',
         'end_time',
