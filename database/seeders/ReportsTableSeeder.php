@@ -22,8 +22,8 @@ class ReportsTableSeeder extends Seeder
                 'filters' => json_encode([
                     'date' => ['month', 'year'],
                     'type_of_person' => ['Interpreter', 'Coordinator', 'All'],
-                    'interpreter' => ['ssn', 'name'],
-                    'coordinator' => ['ssn', 'name'],
+                    'interpreter' => ['Name','Language'],
+                    'coordinator' => ['Name', ],
                 ]),
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -35,8 +35,8 @@ class ReportsTableSeeder extends Seeder
                 'filters' => json_encode([
                     'date' => ['year'],
                     'type_of_person' => ['Interpreter', 'Coordinator', 'All'],
-                    'interpreter' => ['ssn', 'name'],
-                    'coordinator' => ['ssn', 'name'],
+                    'interpreter' => ['Name','Language'],
+                    'coordinator' => ['Name', ],
                 ]),
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -48,8 +48,8 @@ class ReportsTableSeeder extends Seeder
                 'filters' => json_encode([
                     'date' => ['year'],
                     'type_of_person' => ['Interpreter', 'Coordinator', 'All'],
-                    'interpreter' => ['ssn', 'name'],
-                    'coordinator' => ['ssn', 'name'],
+                    'interpreter' => ['Name', 'Language'],
+                    'coordinator' => ['Name' ],
                 ]),
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -61,8 +61,8 @@ class ReportsTableSeeder extends Seeder
                 'filters' => json_encode([
                     'date' => ['month', 'year'],
                     'type_of_person' => ['Interpreter', 'Coordinator', 'All'],
-                    'interpreter' => ['ssn', 'name'],
-                    'coordinator' => ['ssn', 'name'],
+                    'interpreter' => ['Name','Language'],
+                    'coordinator' => ['Name', ],
                 ]),
                 'created_at' => now(),
                 'updated_at' => now(),

@@ -83,6 +83,8 @@ class ReportController extends Controller
 
     public function pdf(Report $report)
     {
+        return $report;
+        exit;
         if ($report->type == 'a') {
             $year = Carbon::parse($report->start_date)->format('Y');
 
