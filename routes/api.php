@@ -119,6 +119,8 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::get('reports/{report}', 'show');
 
         Route::post('reports', 'store');
+        Route::post('reports/generate', 'generate');
+        
         Route::put('reports/{report}', 'update');
         Route::delete('reports/{report}', 'destroy');
     });

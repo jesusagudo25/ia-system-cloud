@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Annual Report: {{ Carbon\Carbon::parse($report->start_date)->format('m-d-Y') }} to {{ Carbon\Carbon::parse($report->end_date)->format('m-d-Y') }}</title>
+    <title>{{ $report['title'] }}: 
+        {{ Carbon\Carbon::parse($report['start_date'])->format('m-d-Y') }} to {{ Carbon\Carbon::parse($report['end_date'])->format('m-d-Y') }}</title>
     <style>
         /* Font Definitions */
         @font-face {
@@ -58,12 +59,14 @@
 
 <body lang=ES-PA style='word-wrap:break-word'>
 
+    {{-- Count reportsCoordinators > 0 , page break --}}
+    @if (count($reportsInterpreters) > 0)
     <div class=WordSection1>
         @foreach ($reportsInterpreters as $key => $reportList)
             <div class=WordSection1>
                 <p class=MsoNormal align=center style='text-align:center'><b>
                         <span style='font-size:12.0pt;line-height:107%;font-family:"Arial",sans-serif'>
-                            Annual Report: {{ Carbon\Carbon::parse($report->start_date)->format('m-d-Y') }} to {{ Carbon\Carbon::parse($report->end_date)->format('m-d-Y') }}
+                            {{ $report['title'] }}: {{ Carbon\Carbon::parse($report['start_date'])->format('m-d-Y') }} to {{ Carbon\Carbon::parse($report['end_date'])->format('m-d-Y') }}
                         </span></b>
                 </p>
                 <hr>
@@ -165,15 +168,28 @@
             </div>
             <p class=MsoNormal>&nbsp;</p>
 
+        {{-- Validate if the report not is the last --}}
+        @if (!$loop->last)
             <div class="page-break"></div>
+        @endif
         @endforeach
     </div>
+    @endif
+
+
+    {{-- Count reportsCoordinators > 0 , page break --}}
+    @if (count($reportsCoordinators) > 0)
+
+        @if (count($reportsInterpreters) > 0)
+            <div class="page-break"></div>
+        @endif
+    
     <div class=WordSection1>
         @foreach ($reportsCoordinators as $key => $reportList)
             <div class=WordSection1>
                 <p class=MsoNormal align=center style='text-align:center'><b>
                         <span style='font-size:12.0pt;line-height:107%;font-family:"Arial",sans-serif'>
-                            Annual Report: {{ Carbon\Carbon::parse($report->start_date)->format('m-d-Y') }} to {{ Carbon\Carbon::parse($report->end_date)->format('m-d-Y') }}
+                            {{ $report['title'] }}: {{ Carbon\Carbon::parse($report['start_date'])->format('m-d-Y') }} to {{ Carbon\Carbon::parse($report['end_date'])->format('m-d-Y') }}
                         </span></b>
                 </p>
                 <hr>
@@ -281,6 +297,7 @@
             @endif
         @endforeach
     </div>
+    @endif
 
 </body>
 
