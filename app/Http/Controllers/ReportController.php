@@ -131,7 +131,6 @@ class ReportController extends Controller
 
     public function monthlyServiceReport(array $params = [])
     {
-        DB::enableQueryLog(); // Activa el registro de consultas
 
         $report = [
             'title' => $params['report']->title,
@@ -191,7 +190,7 @@ class ReportController extends Controller
             ];
 
             $total = 0;
-            
+
             foreach ($months as $month) {
                 $range = ReportController::startAndEndDateForMonth(explode('_', $month)[0], explode('_', $month)[1]);
                 $start_date = $range['start_date'];
@@ -208,8 +207,8 @@ class ReportController extends Controller
                 $total += $salary;
                 $row[$month] = $salary ? number_format($salary, 2) : '0.00';
             }
-            
-            
+
+
             $row['total'] = $total ? number_format($total, 2) : '0.00';
             $reportsInterpreters[] = $row;
         }
@@ -248,7 +247,6 @@ class ReportController extends Controller
             $row['total'] = $total ? number_format($total, 2) : '0.00';
             $reportsCoordinators[] = $row;
         }
-        Log::debug(DB::getQueryLog()); // Registra las consultas ejecutadas en el archivo de logs
 
         //Validate if invoice_details is empty
         if (empty($reportsInterpreters) && empty($reportsCoordinators)) {
@@ -256,17 +254,16 @@ class ReportController extends Controller
         }
 
         // Generate PDF AND SAVE IT
-        $pdf = PDF::loadView('pdf.monthly', compact('report', 'reportsCoordinators', 'reportsInterpreters', 'months'));
+        $pdf = PDF::loadView('pdf.monthly', compact('report', 'reportsCoordinators', 'reportsInterpreters', 'months'))->setPaper('a4', 'landscape');
         $file_name = 'monthly_service_report_' . Carbon::parse($params['startDate'])->format('m-d-Y') . '_' . Carbon::parse($params['endDate'])->format('m-d-Y') . '.pdf';
         $pdf->save(storage_path('app/public/reports/' . $file_name));
 
         return response()->json([
             'file_name' => $file_name,
-            'file_path' => url('api/reports/' . $file_name.'/download'),
+            'file_path' => url('api/reports/' . $file_name . '/download'),
             'status' => 'success',
             'message' => 'Report generated successfully',
         ]);
-
     }
 
     public function annualServiceReport(array $params = [])
@@ -338,7 +335,7 @@ class ReportController extends Controller
                     ->select('invoice_details.total_interpreter'); // Selecciona solo la columna necesaria
 
                 $salary = $details->sum('total_interpreter');
-                $row['total'] = $salary ? number_format($salary,2) : '0.00';
+                $row['total'] = $salary ? number_format($salary, 2) : '0.00';
                 $reportsInterpreters[$year]['interpreters'][] = $row;
             }
         }
@@ -370,12 +367,12 @@ class ReportController extends Controller
                     ->select('invoice_details.total_coordinator'); // Selecciona solo la columna necesaria
 
                 $salary = $details->sum('total_coordinator');
-                $row['total'] = $salary ? number_format($salary,2) : '0.00';
+                $row['total'] = $salary ? number_format($salary, 2) : '0.00';
                 $reportsCoordinators[$year]['coordinators'][] = $row;
             }
         }
 
-        Log::debug(DB::getQueryLog()); // Registra las consultas ejecutadas en el archivo de logs
+        
 
         //Validate if invoice_details is empty
         if (empty($reportsInterpreters) && empty($reportsCoordinators)) {
@@ -389,7 +386,7 @@ class ReportController extends Controller
 
         return response()->json([
             'file_name' => $file_name,
-            'file_path' => url('api/reports/' . $file_name.'/download'),
+            'file_path' => url('api/reports/' . $file_name . '/download'),
             'status' => 'success',
             'message' => 'Report generated successfully',
         ]);
@@ -398,9 +395,333 @@ class ReportController extends Controller
         //$pdf = \PDF::loadView('pdf.annual', compact('report', 'reportsCoordinators', 'reportsInterpreters', 'years'));
     }
 
-    public function cumulativeServiceReport(array $params = []) {}
+    public function cumulativeServiceReport(array $params = [])
+    {
+        $report = [
+            'title' => $params['report']->title,
+            'start_date' => $params['startDate'],
+            'end_date' => $params['endDate'],
+        ];
 
-    public function monthlyServiceReportByPaymentPeriod(array $params = []) {}
+        $year = Carbon::parse($params['startDate'])->format('Y');
+
+        // Filtros dinámicos
+        $interpretersQuery = Interpreter::query()->where('status', 1);
+        $coordinatorsQuery = Coordinator::query()->where('status', 1);
+
+        if ($params['interpreter']) {
+            $interpretersQuery->where('full_name', 'like', '%' . $params['interpreter'] . '%');
+        }
+
+        if ($params['language']) {
+            $interpretersQuery->where('lenguage_id', $params['language']);
+        }
+
+        switch ($params['typeOfPerson']) {
+            case 'All':
+                $interpreters = $interpretersQuery->get();
+                $coordinators = $coordinatorsQuery->get();
+                break;
+            case 'Interpreter':
+                $interpreters = $interpretersQuery->get();
+                $coordinators = collect();
+                break;
+            case 'Coordinator':
+                $coordinators = $coordinatorsQuery->get();
+                $interpreters = collect();
+                break;
+            default:
+                $interpreters = collect();
+                $coordinators = collect();
+                break;
+        }
+
+        $years = ReportController::getYears($params['startDate'], $params['endDate']);
+
+        /* Get reports interpreters */
+        $reportsInterpreters = [];
+
+        foreach ($interpreters as $interpreter) {
+
+            $row = [
+                'name' => $interpreter->full_name,
+                'ssn' => $interpreter->ssn,
+            ];
+
+            foreach ($years as $year) {
+
+                $range = ReportController::startAndEndDateForYear($year);
+                $start_date = $range['start_date'];
+                $end_date = $range['end_date'];
+
+                //Search invoices from interpreter, with payroll_id related
+                $details = Invoice::where('interpreter_id', $interpreter->id)
+                    ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
+                    ->join('payrolls', 'invoices.payroll_id', '=', 'payrolls.id')
+                    ->whereBetween('payrolls.start_date', [$start_date, $end_date]) // Filtra por el periodo de pago
+                    ->select('invoice_details.total_interpreter'); // Selecciona solo la columna necesaria
+
+                $salary = $details->sum('total_interpreter');
+                $row[$year] = $salary ? number_format($salary, 2) : '0.00';
+            }
+            $reportsInterpreters[] = $row;
+        }
+        /* Get reports coordinators */
+
+        $reportsCoordinators = [];
+
+        foreach ($coordinators as $coordinator) {
+            $row = [
+                'name' => $coordinator->full_name,
+                'ssn' => $coordinator->ssn,
+            ];
+
+
+            foreach ($years as $year) {
+
+                $range = ReportController::startAndEndDateForYear($year);
+                $start_date = $range['start_date'];
+                $end_date = $range['end_date'];
+
+                //Search invoices from coordinator, with payroll_id related
+                $details = Invoice::where('coordinator_id', $coordinator->id)
+                    ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
+                    ->join('payrolls', 'invoices.payroll_id', '=', 'payrolls.id')
+                    ->whereBetween('payrolls.start_date', [$start_date, $end_date]) // Filtra por el periodo de pago
+                    ->select('invoice_details.total_coordinator'); // Selecciona solo la columna necesaria
+
+                $salary = $details->sum('total_coordinator');
+                $row[$year] = $salary ? number_format($salary, 2) : '0.00';
+            }
+            $reportsCoordinators[] = $row;
+        }
+
+        
+
+        //Validate if invoice_details is empty
+        if (empty($reportsInterpreters) && empty($reportsCoordinators)) {
+            return response()->json(['status' => 'error', 'message' => 'No data found'], 404);
+        }
+        
+        // Generate PDF AND SAVE IT
+        $pdf = PDF::loadView('pdf.cumulative', compact('report', 'reportsCoordinators', 'reportsInterpreters', 'years'));
+        $file_name = 'cumulative_service_report_' . Carbon::parse($params['startDate'])->format('m-d-Y') . '_' . Carbon::parse($params['endDate'])->format('m-d-Y') . '.pdf';
+        $pdf->save(storage_path('app/public/reports/' . $file_name));
+
+        return response()->json([
+            'file_name' => $file_name,
+            'file_path' => url('api/reports/' . $file_name . '/download'),
+            'status' => 'success',
+            'message' => 'Report generated successfully',
+        ]);
+    }
+
+    public function monthlyServiceReportByPaymentPeriod(array $params = []) {
+
+        $report = [
+            'title' => $params['report']->title,
+            'start_date' => $params['startDate'],
+            'end_date' => $params['endDate'],
+        ];
+
+        // Filtros dinámicos
+        $interpretersQuery = Interpreter::query()->where('status', 1);
+        $coordinatorsQuery = Coordinator::query()->where('status', 1);
+
+        if ($params['interpreter']) {
+            $interpretersQuery->where('full_name', 'like', '%' . $params['interpreter'] . '%');
+        }
+
+        if ($params['language']) {
+            $interpretersQuery->where('lenguage_id', $params['language']);
+        }
+
+        switch ($params['typeOfPerson']) {
+            case 'All':
+                $interpreters = $interpretersQuery->get();
+                $coordinators = $coordinatorsQuery->get();
+                break;
+            case 'Interpreter':
+                $interpreters = $interpretersQuery->get();
+                $coordinators = collect();
+                break;
+            case 'Coordinator':
+                $coordinators = $coordinatorsQuery->get();
+                $interpreters = collect();
+                break;
+            default:
+                $interpreters = collect();
+                $coordinators = collect();
+                break;
+        }
+
+        $months = ReportController::getMeses($params['startDate'], $params['endDate']);
+
+        //Debe haber minimamente un mes y maximo 12 meses
+        if (count($months) < 1 || count($months) > 13) {
+            return response()->json(['status' => 'error', 'message' => 'Invalid date range'], 400);
+        }
+
+        /* Get reports interpreters */
+        $reportsInterpreters = [];
+
+        foreach ($interpreters as $interpreter) {
+            $row = [
+                'name' => $interpreter->full_name,
+                'ssn' => $interpreter->ssn,
+                'address' => $interpreter->address,
+                'city' => $interpreter->city,
+                'state' => $interpreter->state,
+                'zip_code' => $interpreter->zip_code,
+            ];
+
+            $totalFirstPeriod = 0;
+            $totalSecondPeriod = 0;
+
+            foreach ($months as $month) {
+                // Separar el mes y el año del formato recibido
+                $monthName = explode('_', $month)[0];
+                $year = explode('_', $month)[1];
+
+                //Convertir el nombre del mes a número
+                $monthNumber = Carbon::parse($monthName)->month;
+
+                // Rango para el primer periodo: 01-15
+                $start_first_period = Carbon::create($year, $monthNumber, 1);
+                $end_first_period = Carbon::create($year, $monthNumber, 15);
+
+                // Rango para el segundo periodo: 16-31 (o final del mes)
+                $start_second_period = Carbon::create($year, $monthNumber, 16);
+                $end_second_period = Carbon::create($year, $monthNumber)->endOfMonth();
+
+                // Buscar detalles de facturas para el primer periodo
+                $details_first_period = Invoice::where('interpreter_id', $interpreter->id)
+                ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
+                ->join('payrolls', 'invoices.payroll_id', '=', 'payrolls.id')
+                ->whereBetween('payrolls.start_date', [
+                    $start_first_period->format('Y-m-d'),
+                    $end_first_period->format('Y-m-d')
+                ])
+                ->select('invoice_details.total_interpreter');
+
+                $salary_first_period = $details_first_period->sum('total_interpreter');
+
+                // Buscar detalles de facturas para el segundo periodo
+                $details_second_period = Invoice::where('interpreter_id', $interpreter->id)
+                ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
+                ->join('payrolls', 'invoices.payroll_id', '=', 'payrolls.id')
+                ->whereBetween('payrolls.start_date', [
+                    $start_second_period->format('Y-m-d'),
+                    $end_second_period->format('Y-m-d')
+                ])
+                ->select('invoice_details.total_interpreter');
+
+                $salary_second_period = $details_second_period->sum('total_interpreter');
+
+                // Formatear los valores para los periodos
+                $row[$month . '_01-15'] = $salary_first_period ? $salary_first_period : '0.00';
+                $row[$month . '_16-31'] = $salary_second_period ? $salary_second_period : '0.00';
+
+                // Sumar los totales de los periodos
+                $totalFirstPeriod += $salary_first_period;
+                $totalSecondPeriod += $salary_second_period;
+            }
+
+            $row['total_01-15'] = $totalFirstPeriod ? $totalFirstPeriod : '0.00';
+            $row['total_16-31'] = $totalSecondPeriod ? $totalSecondPeriod : '0.00';
+            $reportsInterpreters[] = $row;
+        }
+        
+
+        /* Get reports coordinators */
+
+        $reportsCoordinators = [];
+
+        foreach ($coordinators as $coordinator) {
+            $row = [
+                'name' => $coordinator->full_name,
+                'ssn' => $coordinator->ssn,
+                'address' => $coordinator->address,
+                'city' => $coordinator->city,
+                'state' => $coordinator->state,
+                'zip_code' => $coordinator->zip_code,
+            ];
+
+            $totalFirstPeriod = 0;
+            $totalSecondPeriod = 0;
+
+            foreach ($months as $month) {
+                // Separar el mes y el año del formato recibido
+                $monthName = explode('_', $month)[0];
+                $year = explode('_', $month)[1];
+
+                //Convertir el nombre del mes a número
+                $monthNumber = Carbon::parse($monthName)->month;
+
+                // Rango para el primer periodo: 01-15
+                $start_first_period = Carbon::create($year, $monthNumber, 1);
+                $end_first_period = Carbon::create($year, $monthNumber, 15);
+
+                // Rango para el segundo periodo: 16-31 (o final del mes)
+                $start_second_period = Carbon::create($year, $monthNumber, 16);
+                $end_second_period = Carbon::create($year, $monthNumber)->endOfMonth();
+
+                // Buscar detalles de facturas para el primer periodo
+                $details_first_period = Invoice::where('coordinator_id', $coordinator->id)
+                ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
+                ->join('payrolls', 'invoices.payroll_id', '=', 'payrolls.id')
+                ->whereBetween('payrolls.start_date', [
+                    $start_first_period->format('Y-m-d'),
+                    $end_first_period->format('Y-m-d')
+                ])
+                ->select('invoice_details.total_coordinator');
+
+                $salary_first_period = $details_first_period->sum('total_coordinator');
+
+                // Buscar detalles de facturas para el segundo periodo
+                $details_second_period = Invoice::where('coordinator_id', $coordinator->id)
+                ->join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
+                ->join('payrolls', 'invoices.payroll_id', '=', 'payrolls.id')
+                ->whereBetween('payrolls.start_date', [
+                    $start_second_period->format('Y-m-d'),
+                    $end_second_period->format('Y-m-d')
+                ])
+                
+                ->select('invoice_details.total_coordinator');
+
+                $salary_second_period = $details_second_period->sum('total_coordinator');
+
+                // Formatear los valores para los periodos
+                $row[$month . '_01-15'] = $salary_first_period ? $salary_first_period : '0.00';
+                $row[$month . '_16-31'] = $salary_second_period ? $salary_second_period : '0.00';
+
+                // Sumar los totales de los periodos
+                $totalFirstPeriod += $salary_first_period;
+                $totalSecondPeriod += $salary_second_period;
+            }
+
+            $row['total_01-15'] = $totalFirstPeriod ? $totalFirstPeriod : '0.00';
+            $row['total_16-31'] = $totalSecondPeriod ? $totalSecondPeriod : '0.00';
+            $reportsCoordinators[] = $row;
+        }
+
+        //Validate if invoice_details is empty
+        if (empty($reportsInterpreters) && empty($reportsCoordinators)) {
+            return response()->json(['status' => 'error', 'message' => 'No data found'], 404);
+        }
+
+        // Generate PDF AND SAVE IT
+        $pdf = PDF::loadView('pdf.monthly-by-payment', compact('report', 'reportsCoordinators', 'reportsInterpreters', 'months'))->setPaper('a4', 'landscape');
+        $file_name = 'monthly_service_report_by_payment_period_' . Carbon::parse($params['startDate'])->format('m-d-Y') . '_' . Carbon::parse($params['endDate'])->format('m-d-Y') . '.pdf';
+        $pdf->save(storage_path('app/public/reports/' . $file_name));
+
+        return response()->json([
+            'file_name' => $file_name,
+            'file_path' => url('api/reports/' . $file_name . '/download'),
+            'status' => 'success',
+            'message' => 'Report generated successfully',
+        ]);
+    }
 
     /**
      * Display the specified resource.
@@ -449,6 +770,7 @@ class ReportController extends Controller
 
         return $years;
     }
+    
 
     public function startAndEndDateForMonth($month, $year)
     {
