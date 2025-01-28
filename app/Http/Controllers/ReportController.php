@@ -90,8 +90,8 @@ class ReportController extends Controller
 
         //Filter information
         $filters = $request->filters;
-        $startDate = isset($filters['start_date']) ? Carbon::parse($filters['start_date']) : null;
-        $endDate = isset($filters['end_date']) ? Carbon::parse($filters['end_date']) : null;
+        $startDate = isset($filters['start_date']) ? Carbon::parse($filters['start_date'])->format('Y-m-d') : null;
+        $endDate = isset($filters['end_date']) ? Carbon::parse($filters['end_date'])->format('Y-m-d') : null;
         $typeOfPerson = $filters['type_of_person'] ?? null;
         $nameOfinterpreter = $filters['name_of_interpreter'] ?? null;
         $languageId = $filters['language_id'] ?? null;
@@ -131,7 +131,6 @@ class ReportController extends Controller
 
     public function monthlyServiceReport(array $params = [])
     {
-
         $report = [
             'title' => $params['report']->title,
             'start_date' => $params['startDate'],
@@ -192,7 +191,13 @@ class ReportController extends Controller
             $total = 0;
 
             foreach ($months as $month) {
-                $range = ReportController::startAndEndDateForMonth(explode('_', $month)[0], explode('_', $month)[1]);
+                //$range = ReportController::startAndEndDateForMonth(explode('_', $month)[0], explode('_', $month)[1]);
+                // Separa el mes y el año
+                [$monthName, $year] = explode('_', $month);
+
+                // Obtén el rango dinámico
+                $range = ReportController::startAndEndDateForMonthMaxMin($monthName, $year, $params['startDate'], $params['endDate']);
+
                 $start_date = $range['start_date'];
                 $end_date = $range['end_date'];
 
@@ -229,7 +234,12 @@ class ReportController extends Controller
 
             $total = 0;
             foreach ($months as $month) {
-                $range = ReportController::startAndEndDateForMonth(explode('_', $month)[0], explode('_', $month)[1]);
+                
+                [$monthName, $year] = explode('_', $month);
+
+                // Obtén el rango dinámico
+                $range = ReportController::startAndEndDateForMonthMaxMin($monthName, $year, $params['startDate'], $params['endDate']);
+                
                 $start_date = $range['start_date'];
                 $end_date = $range['end_date'];
 
@@ -273,9 +283,7 @@ class ReportController extends Controller
             'start_date' => $params['startDate'],
             'end_date' => $params['endDate'],
         ];
-
-        $year = Carbon::parse($params['startDate'])->format('Y');
-
+        DB::enableQueryLog(); // Activa el registro de consultas
         // Filtros dinámicos
         $interpretersQuery = Interpreter::query()->where('status', 1);
         $coordinatorsQuery = Coordinator::query()->where('status', 1);
@@ -323,7 +331,7 @@ class ReportController extends Controller
                     'zip_code' => $interpreter->zip_code,
                 ];
 
-                $range = ReportController::startAndEndDateForYear($year);
+                $range = ReportController::startAndEndDateForYearMaxMin($year, $params['startDate'], $params['endDate']);
                 $start_date = $range['start_date'];
                 $end_date = $range['end_date'];
 
@@ -339,6 +347,7 @@ class ReportController extends Controller
                 $reportsInterpreters[$year]['interpreters'][] = $row;
             }
         }
+        Log::debug(DB::getQueryLog()); // Registra las consultas ejecutadas en el archivo de logs
 
         /* Get reports coordinators */
 
@@ -355,7 +364,7 @@ class ReportController extends Controller
                     'zip_code' => $coordinator->zip_code,
                 ];
 
-                $range = ReportController::startAndEndDateForYear($year);
+                $range = ReportController::startAndEndDateForYearMaxMin($year, $params['startDate'], $params['endDate']);
                 $start_date = $range['start_date'];
                 $end_date = $range['end_date'];
 
@@ -403,8 +412,6 @@ class ReportController extends Controller
             'end_date' => $params['endDate'],
         ];
 
-        $year = Carbon::parse($params['startDate'])->format('Y');
-
         // Filtros dinámicos
         $interpretersQuery = Interpreter::query()->where('status', 1);
         $coordinatorsQuery = Coordinator::query()->where('status', 1);
@@ -450,7 +457,7 @@ class ReportController extends Controller
 
             foreach ($years as $year) {
 
-                $range = ReportController::startAndEndDateForYear($year);
+                $range = ReportController::startAndEndDateForYearMaxMin($year, $params['startDate'], $params['endDate']);
                 $start_date = $range['start_date'];
                 $end_date = $range['end_date'];
 
@@ -479,7 +486,7 @@ class ReportController extends Controller
 
             foreach ($years as $year) {
 
-                $range = ReportController::startAndEndDateForYear($year);
+                $range = ReportController::startAndEndDateForYearMaxMin($year, $params['startDate'], $params['endDate']);
                 $start_date = $range['start_date'];
                 $end_date = $range['end_date'];
 
@@ -580,8 +587,7 @@ class ReportController extends Controller
 
             foreach ($months as $month) {
                 // Separar el mes y el año del formato recibido
-                $monthName = explode('_', $month)[0];
-                $year = explode('_', $month)[1];
+                [$monthName, $year] = explode('_', $month);
 
                 //Convertir el nombre del mes a número
                 $monthNumber = Carbon::parse($monthName)->month;
@@ -632,7 +638,6 @@ class ReportController extends Controller
             $reportsInterpreters[] = $row;
         }
         
-
         /* Get reports coordinators */
 
         $reportsCoordinators = [];
@@ -783,10 +788,42 @@ class ReportController extends Controller
         ];
     }
 
+    public function startAndEndDateForMonthMaxMin($month, $year, $startDate, $endDate)
+{
+    // Obtén el rango completo del mes
+    $firstDayOfMonth = date('Y-m-d', strtotime("first day of $month $year"));
+    $lastDayOfMonth = date('Y-m-d', strtotime("last day of $month $year"));
+
+    // Ajusta el inicio y fin al rango proporcionado
+    $start_date = max($firstDayOfMonth, $startDate); // Usa la fecha mayor (entre el inicio del mes y $startDate)
+    $end_date = min($lastDayOfMonth, $endDate);     // Usa la fecha menor (entre el fin del mes y $endDate)
+
+    return [
+        'start_date' => $start_date,
+        'end_date' => $end_date,
+    ];
+}
+
     public function startAndEndDateForYear($year)
     {
         $start_date = date('Y-m-d', strtotime("first day of January $year"));
         $end_date = date('Y-m-d', strtotime("last day of December $year"));
+
+        return [
+            'start_date' => $start_date,
+            'end_date' => $end_date,
+        ];
+    }
+
+    public function startAndEndDateForYearMaxMin($year, $startDate, $endDate)
+    {
+        // Obtén el rango completo del año
+        $firstDayOfYear = date('Y-m-d', strtotime("first day of January $year"));
+        $lastDayOfYear = date('Y-m-d', strtotime("last day of December $year"));
+
+        // Ajusta el inicio y fin al rango proporcionado
+        $start_date = max($firstDayOfYear, $startDate); // Usa la fecha mayor (entre el inicio del año y $startDate)
+        $end_date = min($lastDayOfYear, $endDate);     // Usa la fecha menor (entre el fin del año y $endDate)
 
         return [
             'start_date' => $start_date,

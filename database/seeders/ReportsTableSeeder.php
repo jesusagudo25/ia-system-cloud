@@ -20,7 +20,7 @@ class ReportsTableSeeder extends Seeder
                 'title' => 'Monthly Service Report',
                 'description' => 'By IAJ ROBOT',
                 'filters' => json_encode([
-                    'date' => ['month', 'year'],
+                    'date' => ['day', 'month', 'year'],
                     'type_of_person' => ['Interpreter', 'Coordinator', 'All'],
                     'interpreter' => ['Name','Language'],
                     'coordinator' => ['Name', ],
@@ -33,7 +33,7 @@ class ReportsTableSeeder extends Seeder
                 'title' => 'Annual Service Report',
                 'description' => 'By IAJ ROBOT',
                 'filters' => json_encode([
-                    'date' => ['year'],
+                    'date' => ['day', 'month', 'year'],
                     'type_of_person' => ['Interpreter', 'Coordinator', 'All'],
                     'interpreter' => ['Name','Language'],
                     'coordinator' => ['Name', ],
@@ -46,7 +46,7 @@ class ReportsTableSeeder extends Seeder
                 'title' => 'Cumulative Service Report by Year',
                 'description' => 'By IAJ ROBOT',
                 'filters' => json_encode([
-                    'date' => ['year'],
+                    'date' => ['day', 'month', 'year'],
                     'type_of_person' => ['Interpreter', 'Coordinator', 'All'],
                     'interpreter' => ['Name', 'Language'],
                     'coordinator' => ['Name' ],
@@ -59,7 +59,7 @@ class ReportsTableSeeder extends Seeder
                 'title' => 'Monthly Service Report by Payment Period',
                 'description' => 'By IAJ ROBOT',
                 'filters' => json_encode([
-                    'date' => ['month', 'year'],
+                    'date' => ['day', 'month', 'year'],
                     'type_of_person' => ['Interpreter', 'Coordinator', 'All'],
                     'interpreter' => ['Name','Language'],
                     'coordinator' => ['Name', ],
