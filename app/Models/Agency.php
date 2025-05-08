@@ -23,4 +23,16 @@ class Agency extends Model
     {
         return $this->hasMany(Invoice::class);
     }
+
+    public function specialPrices()
+    {
+        return $this->hasMany(SpecialPrice::class);
+    }
+
+    public function lenguagesWithSpecialPrices()
+    {
+        return $this->belongsToMany(Lenguage::class, 'special_prices')
+            ->withPivot(['price_per_hour', 'price_per_hour_interpreter'])
+            ->withTimestamps();
+    }
 }

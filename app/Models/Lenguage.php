@@ -19,4 +19,16 @@ class Lenguage extends Model
     {
         return $this->hasMany(Interpreter::class);
     }
+
+    public function specialPrices()
+    {
+        return $this->hasMany(SpecialPrice::class);
+    }
+
+    public function agenciesWithSpecialPrices()
+    {
+        return $this->belongsToMany(Agency::class, 'special_prices')
+            ->withPivot(['price_per_hour', 'price_per_hour_interpreter'])
+            ->withTimestamps();
+    }
 }
