@@ -42,11 +42,12 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::put('lenguages/{lenguage}', 'update');
         Route::delete('lenguages/{lenguage}', 'destroy');
 
+        Route::get('lenguages/special-price/{lenguage}', 'showSpecialPrice');
+        Route::get('lenguages/special-price/{lenguage}/{agency}', 'showSpecialPriceByAgency');
+        
         Route::post('lenguages/special-price', 'storeSpecialPrice');
         Route::put('lenguages/special-price/{lenguage}', 'updateSpecialPrice');
         Route::delete('lenguages/special-price/{lenguage}', 'destroySpecialPrice');
-        Route::get('lenguages/special-price/{lenguage}', 'showSpecialPrice');
-        Route::get('lenguages/special-price/{lenguage}/{agency}', 'showSpecialPriceByAgency');
     });
 
     Route::controller(AgencyController::class)->group(function () {

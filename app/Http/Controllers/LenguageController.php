@@ -75,7 +75,21 @@ class LenguageController extends Controller
      */
     public function showSpecialPrice(Lenguage $lenguage)
     {
-        $lenguage = Lenguage::with('agencies')->find($lenguage->id);
+        //agenciesWithSpecialPrices
+        $lenguage = Lenguage::with(['agenciesWithSpecialPrices' => function ($query) {
+            $query->withPivot(['price_per_hour', 'price_per_hour_interpreter']);
+        }])->find($lenguage->id);
+
+        //Map the agencies to include the special prices
+        $lenguage->agenciesWithSpecialPrices = $lenguage->agenciesWithSpecialPrices->map(function ($agency) {
+            return [
+                'agency_id' => $agency->id,
+                'agency_name' => $agency->name,
+                'price_per_hour' => $agency->pivot->price_per_hour,
+                'price_per_hour_interpreter' => $agency->pivot->price_per_hour_interpreter
+            ];
+        });
+
         return response()->json([
             'message' => 'Lenguage retrieved successfully',
             'lenguage' => $lenguage
