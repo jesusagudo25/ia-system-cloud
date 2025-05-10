@@ -65,8 +65,19 @@ class LenguageController extends Controller
             'price_per_hour' => 'required',
         ]);
 
+        //Validate if the agency exists in special prices
+        $agency = Lenguage::find($request->lenguage_id)->specialPrices
+            ->where('agency_id', $request->agency_id)
+            ->first();
+        if ($agency) {
+            return response()->json([
+                'message' => 'Agency already exists in special prices',
+                'agency' => $agency
+            ], 400);
+        }
+        
         $lenguage = Lenguage::find($request->lenguage_id);
-        $lenguage->agencies()->attach($request->agency_id, [
+        $lenguage->agenciesWithSpecialPrices()->attach($request->agency_id, [
             'price_per_hour' => $request->price_per_hour,
             'price_per_hour_interpreter' => $request->price_per_hour_interpreter
         ]);
@@ -144,16 +155,23 @@ class LenguageController extends Controller
     /**
      * Update special price for a lenguage and agency
      */
-    public function updateSpecialPrice(Request $request)
+    public function updateSpecialPrice(Request $request, Lenguage $lenguage)
     {
         $request->validate([
-            'lenguage_id' => 'required',
             'agency_id' => 'required',
             'price_per_hour' => 'required',
         ]);
 
-        $lenguage = Lenguage::find($request->lenguage_id);
-        $lenguage->agencies()->updateExistingPivot($request->agency_id, [
+        //Validate lenguage_id
+        if (!$lenguage) {
+            return response()->json([
+                'message' => 'Lenguage not found'
+            ], 404);
+        }
+
+        $lenguage = Lenguage::find($lenguage->id);
+
+        $lenguage->agenciesWithSpecialPrices()->updateExistingPivot($request->agency_id, [
             'price_per_hour' => $request->price_per_hour,
             'price_per_hour_interpreter' => $request->price_per_hour_interpreter
         ]);
@@ -175,16 +193,22 @@ class LenguageController extends Controller
     /**
      * Remove special price for a lenguage and agency
      */
-    public function destroySpecialPrice(Request $request)
+    public function destroySpecialPrice(Request $request, Lenguage $lenguage)
     {
+        //Validate lenguage_id
+        if (!$lenguage) {
+            return response()->json([
+                'message' => 'Lenguage not found'
+            ], 404);
+        }
+
         $request->validate([
-            'lenguage_id' => 'required',
             'agency_id' => 'required',
         ]);
 
-        $lenguage = Lenguage::find($request->lenguage_id);
-        $lenguage->agencies()->detach($request->agency_id);
-        
+        $lenguage = Lenguage::find($lenguage->id);
+
+        $lenguage->agenciesWithSpecialPrices()->detach($request->agency_id);
         return response()->json([
             'message' => 'Lenguage deleted successfully',
             'lenguage' => $lenguage
