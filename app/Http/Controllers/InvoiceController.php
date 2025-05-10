@@ -153,6 +153,21 @@ class InvoiceController extends Controller
             'comments' => $request->comments
         ]);
 
+        // validate if the invoice was created
+        if (!$invoice) {
+            return response()->json([
+                'message' => 'Invoice not created',
+                'status' => 'error',
+            ], 400);
+        }
+        // validate if the invoice detail was created
+        if (!$invoice->invoiceDetails) {
+            return response()->json([
+                'message' => 'Invoice detail not created',
+                'status' => 'error',
+            ], 400);
+        }
+
         return response()->json([
             'message' => 'Invoice created successfully',
             'status' => 'success',

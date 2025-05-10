@@ -17,7 +17,23 @@ class LenguageController extends Controller
 
     public function indexStatus()
     {
-        return Lenguage::where('status', 1)->get();
+        //return Lenguage::where('status', 1)->get();
+        $lenguage = Lenguage::where('status', 1)->with(['agenciesWithSpecialPrices' => function ($query) {
+            $query->withPivot(['price_per_hour', 'price_per_hour_interpreter']);
+        }])->get();
+
+        //Map the agencies to include the special prices
+        return $lenguage->map(function ($lenguage) {
+            $lenguage->agenciesWithSpecialPrices = $lenguage->agenciesWithSpecialPrices->map(function ($agency) {
+                return [
+                    'agency_id' => $agency->id,
+                    'agency_name' => $agency->name,
+                    'price_per_hour' => $agency->pivot->price_per_hour,
+                    'price_per_hour_interpreter' => $agency->pivot->price_per_hour_interpreter
+                ];
+            });
+            return $lenguage;
+        });
     }
 
     /**
