@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\PrivateReportStorage;
+use Throwable;
 use App\Models\Agency;
 use App\Models\Coordinator;
 use PDF;
@@ -116,13 +118,19 @@ class ReportController extends Controller
             3- Cumulative Service Report by Year
             4- Monthly Service Report by Payment Period
         */
-        return match ($reportId) {
-            1 => $this->monthlyServiceReport($params),
-            2 => $this->annualServiceReport($params),
-            3 => $this->cumulativeServiceReport($params),
-            4 => $this->monthlyServiceReportByPaymentPeriod($params),
-            default => response()->json(['error' => 'Case not found'], 404),
-        };
+        try {
+            return match ($reportId) {
+                1 => $this->monthlyServiceReport($params),
+                2 => $this->annualServiceReport($params),
+                3 => $this->cumulativeServiceReport($params),
+                4 => $this->monthlyServiceReportByPaymentPeriod($params),
+                default => response()->json(['error' => 'Case not found'], 404),
+            };
+        } catch (Throwable $error) {
+            return response()->json([
+                'status' => 'error', 'message' => 'The report could not be generated. Please try again.',
+            ], 500)->header('Cache-Control', 'private, no-store');
+        }
     }
 
     /**
@@ -265,15 +273,7 @@ class ReportController extends Controller
 
         // Generate PDF AND SAVE IT
         $pdf = PDF::loadView('pdf.monthly', compact('report', 'reportsCoordinators', 'reportsInterpreters', 'months'))->setPaper('a4', 'landscape');
-        $file_name = 'monthly_service_report_' . Carbon::parse($params['startDate'])->format('m-d-Y') . '_' . Carbon::parse($params['endDate'])->format('m-d-Y') . '.pdf';
-        $pdf->save(storage_path('app/public/reports/' . $file_name));
-
-        return response()->json([
-            'file_name' => $file_name,
-            'file_path' => url('api/reports/' . $file_name . '/download'),
-            'status' => 'success',
-            'message' => 'Report generated successfully',
-        ]);
+        return $this->storeGeneratedReport($pdf);
     }
 
     public function annualServiceReport(array $params = [])
@@ -390,15 +390,7 @@ class ReportController extends Controller
 
         // Generate PDF AND SAVE IT
         $pdf = PDF::loadView('pdf.annual', compact('report', 'reportsCoordinators', 'reportsInterpreters', 'years'));
-        $file_name = 'annual_service_report_' . Carbon::parse($params['startDate'])->format('m-d-Y') . '_' . Carbon::parse($params['endDate'])->format('m-d-Y') . '.pdf';
-        $pdf->save(storage_path('app/public/reports/' . $file_name));
-
-        return response()->json([
-            'file_name' => $file_name,
-            'file_path' => url('api/reports/' . $file_name . '/download'),
-            'status' => 'success',
-            'message' => 'Report generated successfully',
-        ]);
+        return $this->storeGeneratedReport($pdf);
 
 
         //$pdf = \PDF::loadView('pdf.annual', compact('report', 'reportsCoordinators', 'reportsInterpreters', 'years'));
@@ -512,15 +504,7 @@ class ReportController extends Controller
         
         // Generate PDF AND SAVE IT
         $pdf = PDF::loadView('pdf.cumulative', compact('report', 'reportsCoordinators', 'reportsInterpreters', 'years'));
-        $file_name = 'cumulative_service_report_' . Carbon::parse($params['startDate'])->format('m-d-Y') . '_' . Carbon::parse($params['endDate'])->format('m-d-Y') . '.pdf';
-        $pdf->save(storage_path('app/public/reports/' . $file_name));
-
-        return response()->json([
-            'file_name' => $file_name,
-            'file_path' => url('api/reports/' . $file_name . '/download'),
-            'status' => 'success',
-            'message' => 'Report generated successfully',
-        ]);
+        return $this->storeGeneratedReport($pdf);
     }
 
     public function monthlyServiceReportByPaymentPeriod(array $params = []) {
@@ -717,15 +701,7 @@ class ReportController extends Controller
 
         // Generate PDF AND SAVE IT
         $pdf = PDF::loadView('pdf.monthly-by-payment', compact('report', 'reportsCoordinators', 'reportsInterpreters', 'months'))->setPaper('a4', 'landscape');
-        $file_name = 'monthly_service_report_by_payment_period_' . Carbon::parse($params['startDate'])->format('m-d-Y') . '_' . Carbon::parse($params['endDate'])->format('m-d-Y') . '.pdf';
-        $pdf->save(storage_path('app/public/reports/' . $file_name));
-
-        return response()->json([
-            'file_name' => $file_name,
-            'file_path' => url('api/reports/' . $file_name . '/download'),
-            'status' => 'success',
-            'message' => 'Report generated successfully',
-        ]);
+        return $this->storeGeneratedReport($pdf);
     }
 
     /**
@@ -736,11 +712,41 @@ class ReportController extends Controller
         //
     }
 
-    public function pdf($file_name)
+    private function storeGeneratedReport($pdf)
     {
-        //Search file name in storage, and return it
-        $path = storage_path('app/public/reports/' . $file_name);
-        return response()->file($path)->deleteFileAfterSend(true);
+        try {
+            $file = app(PrivateReportStorage::class)->store($pdf->output());
+            return response()->json($file + [
+                'status' => 'success',
+                'message' => 'Report generated successfully',
+            ])->header('Cache-Control', 'private, no-store');
+        } catch (Throwable $error) {
+            return response()->json([
+                'status' => 'error', 'message' => 'The report could not be stored. Please try again.',
+            ], 500)->header('Cache-Control', 'private, no-store');
+        }
+    }
+
+    public function pdf(string $report, PrivateReportStorage $reports)
+    {
+        try {
+            $pdf = $reports->read($report);
+        } catch (Throwable $error) {
+            return response()->json([
+                'message' => 'The report is temporarily unavailable. Please try again.',
+            ], 503)->header('Cache-Control', 'private, no-store');
+        }
+        if ($pdf === null) {
+            return response()->json([
+                'message' => 'The report is unavailable or expired. Please generate it again.',
+            ], 404)->header('Cache-Control', 'private, no-store');
+        }
+        return response($pdf, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="report_' . $report . '.pdf"',
+            'Cache-Control' => 'private, no-store',
+            'X-Content-Type-Options' => 'nosniff',
+        ]);
     }
 
     public function getMeses($fechaInicio, $fechaFin)

@@ -191,5 +191,7 @@ Route::get('/requests/{request}/download', [RequestController::class, 'pdf'])
 Route::get('/bank-checks-preview/{request}/download', [BankCheckPreviewController::class, 'pdf'])
     ->middleware('auth:sanctum')
     ->name('bank-checks-preview.download');
-Route::get('/reports/{report}/download', [ReportController::class, 'pdf']);
+Route::get('/reports/{report}/download', [ReportController::class, 'pdf'])
+    ->middleware('auth:sanctum')
+    ->name('reports.download');
 Route::get('/last-payroll', [PayrollController::class, 'lastPayroll']);
