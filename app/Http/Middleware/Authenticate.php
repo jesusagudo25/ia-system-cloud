@@ -10,7 +10,13 @@ class Authenticate extends Middleware
 {
     protected function unauthenticated($request, array $guards)
     {
-        if ($request->routeIs('invoices.download')) {
+        if ($request->routeIs(
+            'invoices.download',
+            'payrolls.download',
+            'bank-checks.download',
+            'requests.download',
+            'bank-checks-preview.download'
+        )) {
             throw new HttpResponseException(response()->json([
                 'message' => 'Unauthenticated.',
             ], 401)->header('Cache-Control', 'private, no-store'));

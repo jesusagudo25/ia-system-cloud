@@ -179,9 +179,17 @@ Route::controller(AuthController::class)->group(function(){
 Route::get('/invoices/{invoice}/download', [InvoiceController::class, 'pdf'])
     ->middleware('auth:sanctum')
     ->name('invoices.download');
-Route::get('/payrolls/{payroll}/download', [PayrollController::class, 'pdf']);
-Route::get('/bank-checks/{payroll}/download', [BankCheckController::class, 'pdf']);
-Route::get('/requests/{request}/download', [RequestController::class, 'pdf']);
-Route::get('/bank-checks-preview/{request}/download', [BankCheckPreviewController::class, 'pdf']);
+Route::get('/payrolls/{payroll}/download', [PayrollController::class, 'pdf'])
+    ->middleware('auth:sanctum')
+    ->name('payrolls.download');
+Route::get('/bank-checks/{payroll}/download', [BankCheckController::class, 'pdf'])
+    ->middleware('auth:sanctum')
+    ->name('bank-checks.download');
+Route::get('/requests/{request}/download', [RequestController::class, 'pdf'])
+    ->middleware('auth:sanctum')
+    ->name('requests.download');
+Route::get('/bank-checks-preview/{request}/download', [BankCheckPreviewController::class, 'pdf'])
+    ->middleware('auth:sanctum')
+    ->name('bank-checks-preview.download');
 Route::get('/reports/{report}/download', [ReportController::class, 'pdf']);
 Route::get('/last-payroll', [PayrollController::class, 'lastPayroll']);
