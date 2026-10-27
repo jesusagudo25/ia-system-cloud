@@ -210,7 +210,8 @@ class InvoiceController extends Controller
                 'lenguage' => $invoice->interpreter->lenguage,
             ]
         );
-        return $pdf->stream('invoice_' . $invoice->id . '.pdf');
+        return $pdf->stream('invoice_' . $invoice->id . '.pdf')
+            ->header('Cache-Control', 'private, no-store');
     }
 
     /**

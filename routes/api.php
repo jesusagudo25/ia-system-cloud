@@ -176,7 +176,9 @@ Route::controller(AuthController::class)->group(function(){
     Route::get('/validate-token-access', 'validateTokenAccess');
 });
 
-Route::get('/invoices/{invoice}/download', [InvoiceController::class, 'pdf']);
+Route::get('/invoices/{invoice}/download', [InvoiceController::class, 'pdf'])
+    ->middleware('auth:sanctum')
+    ->name('invoices.download');
 Route::get('/payrolls/{payroll}/download', [PayrollController::class, 'pdf']);
 Route::get('/bank-checks/{payroll}/download', [BankCheckController::class, 'pdf']);
 Route::get('/requests/{request}/download', [RequestController::class, 'pdf']);
