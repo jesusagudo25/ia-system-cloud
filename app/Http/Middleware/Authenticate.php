@@ -16,7 +16,8 @@ class Authenticate extends Middleware
             'bank-checks.download',
             'requests.download',
             'bank-checks-preview.download',
-            'reports.download'
+            'reports.download',
+            'payrolls.last'
         )) {
             throw new HttpResponseException(response()->json([
                 'message' => 'Unauthenticated.',

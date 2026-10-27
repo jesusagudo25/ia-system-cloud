@@ -194,4 +194,6 @@ Route::get('/bank-checks-preview/{request}/download', [BankCheckPreviewControlle
 Route::get('/reports/{report}/download', [ReportController::class, 'pdf'])
     ->middleware('auth:sanctum')
     ->name('reports.download');
-Route::get('/last-payroll', [PayrollController::class, 'lastPayroll']);
+Route::get('/last-payroll', [PayrollController::class, 'lastPayroll'])
+    ->middleware('auth:sanctum')
+    ->name('payrolls.last');
